@@ -33,6 +33,7 @@ export default async function HomePage() {
 
   const artistsForSearch = artists.map((a) => ({
     _id: String(a._id),
+    slug: (a as { slug?: string }).slug,
     name: a.name,
     alias: a.alias,
     specialty: a.specialty,
@@ -44,6 +45,7 @@ export default async function HomePage() {
 
   const featuredForDisplay = featuredArtists.map((a) => ({
     _id: String(a._id),
+    slug: (a as { slug?: string }).slug,
     name: a.name,
     specialty: a.specialty,
     city: a.city,

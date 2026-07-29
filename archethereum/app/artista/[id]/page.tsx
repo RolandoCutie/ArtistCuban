@@ -1,5 +1,6 @@
 'use client'
 
+import { getTemplate } from '@/lib/templates'
 import { AnimatePresence, motion } from 'framer-motion'
 import {
     ArrowUpRight, Award,
@@ -93,14 +94,17 @@ export default function ArtistDetailPage() {
 
   const fetchData = useCallback(async () => {
     try {
-      const [aRes, awRes, svRes] = await Promise.all([
-        fetch(`/api/artists/${id}`),
-        fetch(`/api/artworks?artist_id=${id}`),
-        fetch(`/api/services?artist_id=${id}`),
-      ])
-      setArtist(await aRes.json())
-      setArtworks(await awRes.json())
-      setServices(await svRes.json())
+      const aRes = await fetch(`/api/artists/${id}`)
+      const artistData = await aRes.json()
+      setArtist(artistData)
+      if (artistData?._id) {
+        const [awRes, svRes] = await Promise.all([
+          fetch(`/api/artworks?artist_id=${artistData._id}`),
+          fetch(`/api/services?artist_id=${artistData._id}`),
+        ])
+        setArtworks(await awRes.json())
+        setServices(await svRes.json())
+      }
     } finally {
       setLoading(false)
     }
@@ -173,8 +177,19 @@ export default function ArtistDetailPage() {
     )
   }
 
+  const tpl = getTemplate(artist.template)
+  const tplStyle: React.CSSProperties = {
+    ...Object.entries(tpl.cssVars).reduce(
+      (acc, [k, v]) => ({ ...acc, [k]: v }),
+      {} as React.CSSProperties
+    ),
+    fontFamily: tpl.fontBody,
+    backgroundColor: 'hsl(var(--background))',
+    color: 'hsl(var(--foreground))',
+  }
+
   return (
-    <>
+    <div style={tplStyle} className={`min-h-screen${tpl.accentClass ? ` ${tpl.accentClass}` : ''}`}>
       {/* Hero */}
       <section className="relative h-screen min-h-[600px] w-full overflow-hidden">
         <div className="absolute inset-0">
@@ -656,6 +671,6 @@ export default function ArtistDetailPage() {
           </motion.div>
         )}
       </AnimatePresence>
-    </>
+    </div>
   )
 }

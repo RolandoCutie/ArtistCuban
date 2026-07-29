@@ -36,6 +36,9 @@ export interface IInvoice extends Document {
   client_address?: string
   client_email?: string
 
+  // Concept (single-line description, used when items[] is empty)
+  concept?: string
+
   // Items
   items: IInvoiceItem[]
 
@@ -105,6 +108,8 @@ const InvoiceSchema = new Schema<IInvoice>(
     client_id_number: String,
     client_address: String,
     client_email: String,
+
+    concept: String,
 
     items: { type: [InvoiceItemSchema], default: [] },
 

@@ -29,6 +29,7 @@ export interface IArtistSections {
 
 export interface IArtist extends Document {
   name: string
+  slug?: string
   alias?: string
   specialty: string
   categories?: string[]
@@ -58,9 +59,20 @@ export interface IArtist extends Document {
   created_date: Date
 }
 
+function generateSlug(name: string): string {
+  return name
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9\s]/g, '')
+    .trim()
+    .replace(/\s+/g, '-')
+}
+
 const ArtistSchema = new Schema<IArtist>(
   {
     name: { type: String, required: true },
+    slug: { type: String, unique: true, sparse: true, index: true },
     alias: String,
     specialty: { type: String, required: true },
     categories: [
@@ -135,6 +147,12 @@ const ArtistSchema = new Schema<IArtist>(
   },
   { timestamps: true, collection: 'artisthub/artists' }
 )
+
+ArtistSchema.pre('save', async function () {
+  if (!this.slug && this.name) {
+    this.slug = generateSlug(this.name)
+  }
+})
 
 const Artist: Model<IArtist> =
   mongoose.models.Artist || mongoose.model<IArtist>('Artist', ArtistSchema)

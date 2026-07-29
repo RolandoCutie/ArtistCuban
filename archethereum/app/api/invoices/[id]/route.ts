@@ -1,6 +1,6 @@
-import Invoice from '@/lib/models/Invoice'
-import connectDB from '@/lib/mongodb'
-import { NextRequest, NextResponse } from 'next/server'
+import Invoice from '@/lib/models/Invoice';
+import connectDB from '@/lib/mongodb';
+import { NextRequest, NextResponse } from 'next/server';
 
 interface InvoiceItem { quantity: number; unit_price: number; tax_rate: number; subtotal?: number }
 

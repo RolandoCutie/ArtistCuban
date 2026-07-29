@@ -1,0 +1,61 @@
+import Artist from '@/lib/models/Artist'
+import connectDB from '@/lib/mongodb'
+import { NextRequest, NextResponse } from 'next/server'
+
+export async function GET(req: NextRequest) {
+  try {
+    await connectDB()
+    const { searchParams } = new URL(req.url)
+    const search = searchParams.get('search')
+    const featured = searchParams.get('featured')
+    // admin=true bypasses is_active filter (for dashboard)
+    const admin = searchParams.get('admin') === 'true'
+
+    let query: Record<string, unknown> = {}
+    if (!admin) query.is_active = true   // public API only shows active artists
+    if (featured === 'true') query.is_featured = true
+    if (search) {
+      const regex = new RegExp(search, 'i')
+      query = {
+        ...query,
+        $or: [
+          { name: regex },
+          { alias: regex },
+          { specialty: regex },
+          { categories: regex },
+          { city: regex },
+          { country: regex },
+        ],
+      }
+    }
+
+    const artists = await Artist.find(query).sort({ created_date: -1 }).lean()
+    return NextResponse.json(artists)
+  } catch {
+    return NextResponse.json({ error: 'Error al obtener artistas' }, { status: 500 })
+  }
+}
+
+export async function POST(req: NextRequest) {
+  try {
+    await connectDB()
+    const body = await req.json()
+    // Auto-generate slug from name if not provided
+    if (!body.slug && body.name) {
+      const base = body.name
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9\s]/g, '')
+        .trim()
+        .replace(/\s+/g, '-')
+      // Ensure uniqueness
+      const exists = await Artist.findOne({ slug: base })
+      body.slug = exists ? `${base}-${Date.now()}` : base
+    }
+    const artist = await Artist.create(body)
+    return NextResponse.json(artist, { status: 201 })
+  } catch {
+    return NextResponse.json({ error: 'Error al crear artista' }, { status: 500 })
+  }
+}

@@ -7,6 +7,7 @@ import { useMemo, useState } from 'react'
 
 interface Artist {
   _id: string
+  slug?: string
   name: string
   alias?: string
   specialty?: string
@@ -128,7 +129,7 @@ export default function HeroSearch({ artists }: HeroSearchProps) {
                   transition={{ duration: 0.3, delay: i * 0.05 }}
                 >
                   <Link
-                    href={`/artista/${artist._id}`}
+                    href={`/artista/${artist.slug || artist._id}`}
                     className="flex items-center gap-4 p-4 hover:bg-white/5 transition-colors"
                     onClick={() => { setQuery(''); setActiveCategory(null) }}
                   >
@@ -173,4 +174,3 @@ export default function HeroSearch({ artists }: HeroSearchProps) {
     </motion.div>
   )
 }
-

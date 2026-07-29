@@ -8,8 +8,11 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url)
     const search = searchParams.get('search')
     const featured = searchParams.get('featured')
+    // admin=true bypasses is_active filter (for dashboard)
+    const admin = searchParams.get('admin') === 'true'
 
     let query: Record<string, unknown> = {}
+    if (!admin) query.is_active = true   // public API only shows active artists
     if (featured === 'true') query.is_featured = true
     if (search) {
       const regex = new RegExp(search, 'i')
@@ -37,6 +40,19 @@ export async function POST(req: NextRequest) {
   try {
     await connectDB()
     const body = await req.json()
+    // Auto-generate slug from name if not provided
+    if (!body.slug && body.name) {
+      const base = body.name
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9\s]/g, '')
+        .trim()
+        .replace(/\s+/g, '-')
+      // Ensure uniqueness
+      const exists = await Artist.findOne({ slug: base })
+      body.slug = exists ? `${base}-${Date.now()}` : base
+    }
     const artist = await Artist.create(body)
     return NextResponse.json(artist, { status: 201 })
   } catch {

@@ -1,5 +1,6 @@
 import Artist from '@/lib/models/Artist'
 import connectDB from '@/lib/mongodb'
+import mongoose from 'mongoose'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(
@@ -9,7 +10,10 @@ export async function GET(
   try {
     await connectDB()
     const { id } = await params
-    const artist = await Artist.findById(id).lean()
+    const isObjectId = mongoose.Types.ObjectId.isValid(id) && String(new mongoose.Types.ObjectId(id)) === id
+    const artist = isObjectId
+      ? await Artist.findById(id).lean()
+      : await Artist.findOne({ slug: id }).lean()
     if (!artist) return NextResponse.json({ error: 'No encontrado' }, { status: 404 })
     return NextResponse.json(artist)
   } catch {

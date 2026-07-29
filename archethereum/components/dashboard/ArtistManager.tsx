@@ -1,7 +1,9 @@
 'use client'
 
 import { allSpecialties } from '@/lib/categories'
-import { Pencil, Star, Trash2 } from 'lucide-react'
+import { TEMPLATES } from '@/lib/templates'
+import { ExternalLink, Pencil, Star, Trash2 } from 'lucide-react'
+import Link from 'next/link'
 import { useCallback, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import ArtworkManager from './ArtworkManager'
@@ -33,7 +35,20 @@ interface Artist {
   phone?: string
   whatsapp?: string
   is_featured?: boolean
+  is_active?: boolean
+  template?: string
   inspiring_quote?: string
+  social_links?: {
+    facebook?: string
+    instagram?: string
+    tiktok?: string
+    youtube?: string
+    behance?: string
+    linkedin?: string
+    pinterest?: string
+    twitter?: string
+    website?: string
+  }
 }
 
 type FormData = Omit<Artist, '_id' | 'categories' | 'languages' | 'influences' | 'techniques' | 'education' | 'awards'> & {
@@ -66,13 +81,21 @@ export default function ArtistManager() {
   const [photoUrl, setPhotoUrl] = useState('')
   const [coverUrl, setCoverUrl] = useState('')
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
+  const [selectedTemplate, setSelectedTemplate] = useState('template1')
+  const [isActive, setIsActive] = useState(true)
+  const [socialLinks, setSocialLinks] = useState<Record<string, string>>({})
+  const [sections, setSections] = useState({
+    bio: true, artworks: true, exhibitions: true, services: true,
+    social: true, contact: true, gallery: false, awards: false,
+    influences: false, education: false,
+  })
 
-  const { register, handleSubmit, reset, setValue, watch } = useForm<FormData>()
+  const { register, handleSubmit, reset } = useForm<FormData>()
 
   const fetchArtists = useCallback(async () => {
     setLoading(true)
     try {
-      const res = await fetch('/api/artists')
+      const res = await fetch('/api/artists?admin=true')
       setArtists(await res.json())
     } finally {
       setLoading(false)
@@ -88,11 +111,14 @@ export default function ArtistManager() {
     setPhotoUrl(artist.photo_url || '')
     setCoverUrl(artist.cover_url || '')
     setSelectedCategories(artist.categories || [])
+    setSelectedTemplate(artist.template || 'template1')
+    setIsActive(artist.is_active !== false)
+    setSocialLinks((artist.social_links as Record<string, string>) || {})
+    setSections({ bio: true, artworks: true, exhibitions: true, services: true, social: true, contact: true, gallery: false, awards: false, influences: false, education: false, ...(artist as {sections?: Record<string, boolean>}).sections })
     reset({
       name: artist.name,
       alias: artist.alias,
       specialty: artist.specialty,
-      category: artist.category,
       country: artist.country,
       city: artist.city,
       bio: artist.bio,
@@ -119,6 +145,10 @@ export default function ArtistManager() {
     setPhotoUrl('')
     setCoverUrl('')
     setSelectedCategories([])
+    setSelectedTemplate('template1')
+    setIsActive(true)
+    setSocialLinks({})
+    setSections({ bio: true, artworks: true, exhibitions: true, services: true, social: true, contact: true, gallery: false, awards: false, influences: false, education: false })
     reset({})
   }
 
@@ -128,6 +158,10 @@ export default function ArtistManager() {
     const payload = {
       ...data,
       categories: selectedCategories,
+      template: selectedTemplate,
+      is_active: isActive,
+      social_links: socialLinks,
+      sections,
       photo_url: photoUrl,
       cover_url: coverUrl,
       languages: data.languages_str?.split(',').map((s) => s.trim()).filter(Boolean),
@@ -340,11 +374,117 @@ export default function ArtistManager() {
             </div>
           </div>
 
-          {/* Featured */}
-          <label className="flex items-center gap-3 cursor-pointer">
-            <input {...register('is_featured')} type="checkbox" className="h-4 w-4 rounded border-border accent-foreground" />
-            <span className="text-sm">Artista destacado (aparece en la sección principal)</span>
-          </label>
+          {/* Featured + activo */}
+          <div className="flex flex-wrap gap-6">
+            <label className="flex items-center gap-3 cursor-pointer">
+              <input {...register('is_featured')} type="checkbox" className="h-4 w-4 rounded border-border accent-foreground" />
+              <span className="text-sm">Artista destacado</span>
+            </label>
+            <label className="flex items-center gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={isActive}
+                onChange={(e) => setIsActive(e.target.checked)}
+                className="h-4 w-4 rounded border-border accent-foreground"
+              />
+              <span className="text-sm">Perfil activo (visible en el sitio)</span>
+            </label>
+          </div>
+
+          {/* Plantilla */}
+          <div>
+            <div className="mb-4 flex items-center justify-between">
+              <h3 className="font-heading text-xl">Plantilla del perfil</h3>
+              {editing && (
+                <Link
+                  href={`/artista/${editing._id}`}
+                  target="_blank"
+                  className="flex items-center gap-1.5 rounded-full border border-border px-4 py-1.5 text-xs hover:border-foreground transition-colors"
+                >
+                  <ExternalLink size={12} /> Vista previa
+                </Link>
+              )}
+            </div>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+              {TEMPLATES.map((t) => (
+                <button
+                  key={t.id}
+                  type="button"
+                  onClick={() => setSelectedTemplate(t.id)}
+                  className={`rounded-lg border p-3 text-left transition-all ${
+                    selectedTemplate === t.id ? 'border-foreground ring-1 ring-foreground' : 'border-border hover:border-foreground/40'
+                  }`}
+                >
+                  <div className={`mb-2 h-14 w-full rounded overflow-hidden ${t.preview_bg} border border-border/30 relative`}>
+                    {/* Mini preview bars to give visual character */}
+                    <div className="absolute bottom-2 left-2 right-2 space-y-1">
+                      <div className="h-1.5 rounded-full opacity-30" style={{ background: 'currentColor', width: '60%' }} />
+                      <div className="h-1 rounded-full opacity-20" style={{ background: 'currentColor', width: '40%' }} />
+                    </div>
+                    {selectedTemplate === t.id && (
+                      <div className="absolute right-1.5 top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-foreground text-background text-[8px] font-bold">✓</div>
+                    )}
+                  </div>
+                  <p className="text-xs font-medium leading-tight">{t.name}</p>
+                  <p className="mt-0.5 text-[10px] text-foreground/40 leading-tight">{t.description.split('.')[0]}</p>
+                </button>
+              ))}
+            </div>
+            {editing && (
+              <p className="mt-3 text-xs text-foreground/40">
+                💡 Guarda los cambios y usa &quot;Vista previa&quot; para ver el perfil del artista en tiempo real en una nueva pestaña.
+              </p>
+            )}
+          </div>
+
+          {/* Secciones del perfil */}
+          <div>
+            <h3 className="font-heading text-xl mb-1">Secciones del perfil</h3>
+            <p className="mb-4 text-xs text-foreground/40">Activa o desactiva las secciones que aparecerán en el perfil público del artista.</p>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+              {(Object.keys(sections) as Array<keyof typeof sections>).map((key) => {
+                const labels: Record<string, string> = {
+                  bio: 'Biografía', artworks: 'Obras', exhibitions: 'Exposiciones',
+                  services: 'Servicios', social: 'Redes Sociales', contact: 'Contacto',
+                  gallery: 'Galería', awards: 'Premios', influences: 'Influencias', education: 'Educación',
+                }
+                return (
+                  <label
+                    key={key}
+                    className={`flex cursor-pointer items-center justify-between gap-2 rounded-lg border px-3 py-2.5 transition-colors ${
+                      sections[key] ? 'border-foreground bg-foreground/5' : 'border-border'
+                    }`}
+                  >
+                    <span className="text-sm">{labels[key]}</span>
+                    <div
+                      onClick={() => setSections((prev) => ({ ...prev, [key]: !prev[key] }))}
+                      className={`relative h-5 w-9 shrink-0 cursor-pointer rounded-full transition-colors ${sections[key] ? 'bg-foreground' : 'bg-border'}`}
+                    >
+                      <div className={`absolute top-0.5 h-4 w-4 rounded-full bg-background shadow transition-transform ${sections[key] ? 'translate-x-4' : 'translate-x-0.5'}`} />
+                    </div>
+                  </label>
+                )
+              })}
+            </div>
+          </div>
+
+          {/* Redes sociales */}
+          <div>
+            <h3 className="font-heading text-xl mb-4">Redes sociales</h3>
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {(['instagram', 'facebook', 'tiktok', 'youtube', 'behance', 'linkedin', 'pinterest', 'twitter', 'website'] as const).map((network) => (
+                <div key={network}>
+                  <label className="mb-1 block text-xs uppercase tracking-widest text-foreground/40 capitalize">{network}</label>
+                  <input
+                    value={socialLinks[network] || ''}
+                    onChange={(e) => setSocialLinks((prev) => ({ ...prev, [network]: e.target.value }))}
+                    placeholder={network === 'website' ? 'https://...' : `@usuario o URL`}
+                    className="w-full rounded-lg border border-border bg-transparent px-4 py-2.5 text-sm focus:border-foreground focus:outline-none"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
 
           {/* Botones */}
           <div className="flex gap-3 pt-4">

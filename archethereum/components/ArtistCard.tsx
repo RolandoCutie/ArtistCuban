@@ -7,6 +7,7 @@ import Link from 'next/link'
 interface ArtistCardProps {
   artist: {
     _id: string
+    slug?: string
     name: string
     specialty?: string
     city?: string
@@ -26,7 +27,7 @@ export default function ArtistCard({ artist, index = 0 }: ArtistCardProps) {
       transition={{ duration: 0.7, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
       className="group"
     >
-      <Link href={`/artista/${artist._id}`}>
+      <Link href={`/artista/${artist.slug || artist._id}`}>
         <div className="relative aspect-[3/4] overflow-hidden bg-muted" data-cursor="view">
           {artist.photo_url ? (
             <img

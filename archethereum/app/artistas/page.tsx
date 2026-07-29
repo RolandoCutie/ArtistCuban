@@ -7,6 +7,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 
 interface Artist {
   _id: string
+  slug?: string
   name: string
   alias?: string
   specialty?: string

@@ -3,6 +3,7 @@ import ArtistCard from '@/components/ArtistCard'
 interface FeaturedArtistsProps {
   artists: {
     _id: string
+    slug?: string
     name: string
     specialty?: string
     city?: string

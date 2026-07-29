@@ -40,37 +40,70 @@ function BarChartViz({
 }) {
   const values = data.map((d) => Number(d[valueKey]))
   const max = Math.max(...values, 1)
-  const height = 160
-  const barW = Math.floor(100 / data.length)
-  const gap = 2
+
+  // Fixed coordinate system: 1200 wide, 140 tall chart area + 24 for labels
+  const W = 1200
+  const CH = 140   // chart area height
+  const LH = 24    // label area height
+  const n = data.length
+  const slotW = W / n
+  const barW = slotW * 0.65
+  const barX = (i: number) => i * slotW + (slotW - barW) / 2
 
   return (
     <div className="space-y-2">
       <p className="text-xs uppercase tracking-[0.2em] text-foreground/40">{label}</p>
-      <div className="relative overflow-x-auto rounded-xl border border-border bg-background p-4">
+      <div className="relative rounded-xl border border-border bg-background px-4 pb-2 pt-4">
+        {/* Fixed height container — avoids aspect-ratio stretch bug */}
         <svg
-          viewBox={`0 0 ${data.length * (barW + gap)} ${height + 24}`}
+          viewBox={`0 0 ${W} ${CH + LH}`}
           className="w-full"
-          style={{ minWidth: `${data.length * 36}px` }}
+          style={{ height: '180px' }}
+          preserveAspectRatio="none"
         >
+          {/* Grid lines */}
           {[0.25, 0.5, 0.75, 1].map((frac) => (
-            <line key={frac} x1="0" y1={height - height * frac} x2={data.length * (barW + gap)} y2={height - height * frac} stroke="currentColor" strokeOpacity="0.08" strokeWidth="1" />
+            <line
+              key={frac}
+              x1="0" y1={CH - CH * frac}
+              x2={W}  y2={CH - CH * frac}
+              stroke="currentColor" strokeOpacity="0.08" strokeWidth="2"
+            />
           ))}
+
           {data.map((d, i) => {
             const val = Number(d[valueKey])
-            const barHeight = max > 0 ? (val / max) * height : 0
-            const x = i * (barW + gap)
-            const y = height - barHeight
+            const bh = max > 0 ? (val / max) * CH : 0
+            const x = barX(i)
+            const y = CH - bh
+
             return (
               <g key={d.month}>
-                <rect x={x + 2} y={y} width={barW - 4} height={barHeight} rx="3" fill={color} opacity={val === 0 ? 0.1 : 0.85} />
+                <rect
+                  x={x} y={y}
+                  width={barW} height={bh}
+                  rx={Math.min(6, barW * 0.15)}
+                  fill={color}
+                  opacity={val === 0 ? 0.12 : 0.88}
+                />
                 <title>{`${d.month}: ${format(val)}`}</title>
-                <text x={x + barW / 2} y={height + 16} textAnchor="middle" fontSize="9" fill="currentColor" opacity="0.4">{d.month}</text>
+                <text
+                  x={i * slotW + slotW / 2}
+                  y={CH + LH - 4}
+                  textAnchor="middle"
+                  fontSize="16"
+                  fill="currentColor"
+                  opacity="0.4"
+                >
+                  {d.month}
+                </text>
               </g>
             )
           })}
         </svg>
-        <div className="absolute right-4 top-4 text-[10px] text-foreground/30">{format(max)}</div>
+
+        {/* Max label */}
+        <div className="absolute right-5 top-4 text-[10px] text-foreground/30">{format(max)}</div>
       </div>
     </div>
   )

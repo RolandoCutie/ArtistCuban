@@ -29,10 +29,10 @@ export default function UpcomingEvents({ events }: UpcomingEventsProps) {
         </div>
 
         {events.length === 0 ? (
-          <div className="space-y-2">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="img-shimmer h-32 rounded" />
-            ))}
+          <div className="py-20 text-center">
+            <p className="text-sm uppercase tracking-[0.2em] text-foreground/30">
+              No hay eventos próximos programados
+            </p>
           </div>
         ) : (
           <div className="space-y-2">
