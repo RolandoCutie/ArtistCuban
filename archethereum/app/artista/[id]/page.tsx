@@ -10,7 +10,6 @@ import {
     Phone,
     Share2,
     ShoppingBag,
-    Volume2,
     X
 } from 'lucide-react'
 import Link from 'next/link'
@@ -41,7 +40,7 @@ interface Artist {
   name: string
   alias?: string
   specialty?: string
-  category?: string
+  categories?: string[]
   country?: string
   city?: string
   bio?: string
@@ -60,7 +59,20 @@ interface Artist {
   phone?: string
   whatsapp?: string
   is_featured?: boolean
+  is_active?: boolean
+  template?: string
   inspiring_quote?: string
+  social_links?: {
+    facebook?: string
+    instagram?: string
+    tiktok?: string
+    youtube?: string
+    behance?: string
+    linkedin?: string
+    pinterest?: string
+    twitter?: string
+    website?: string
+  }
 }
 
 interface Service {
@@ -129,9 +141,34 @@ export default function ArtistDetailPage() {
 
   if (!artist || (artist as { error?: string }).error) {
     return (
-      <div className="flex h-screen flex-col items-center justify-center gap-4">
-        <p className="text-foreground/50">Artista no encontrado</p>
-        <Link href="/" className="text-sm underline">← Volver al inicio</Link>
+      <div className="flex h-screen flex-col items-center justify-center gap-6 px-6 text-center">
+        <p className="font-heading text-4xl font-light text-foreground/30">404</p>
+        <p className="font-heading text-xl text-foreground/50">Artista no encontrado</p>
+        <Link href="/" className="text-sm underline text-foreground/40 hover:text-foreground transition-colors">← Volver al inicio</Link>
+      </div>
+    )
+  }
+
+  if (artist.is_active === false) {
+    return (
+      <div className="flex h-screen flex-col items-center justify-center gap-6 px-6 text-center">
+        <div className="mx-auto max-w-md">
+          <p className="mb-2 text-xs uppercase tracking-[0.3em] text-foreground/30">Archethereum</p>
+          <h1 className="font-heading text-4xl font-light leading-tight text-foreground/60 md:text-5xl">
+            Este artista no se encuentra<br />
+            <span className="italic">disponible en este momento</span>
+          </h1>
+          <p className="mt-6 text-sm text-foreground/40">
+            El perfil de este artista no está activo actualmente.<br />
+            Por favor, vuelve más tarde o explora otros artistas.
+          </p>
+          <Link
+            href="/"
+            className="mt-8 inline-flex items-center gap-2 border-b border-foreground/30 pb-1 text-xs uppercase tracking-widest text-foreground/40 hover:border-foreground/60 hover:text-foreground/60 transition-colors"
+          >
+            Explorar artistas
+          </Link>
+        </div>
       </div>
     )
   }
@@ -593,9 +630,6 @@ export default function ArtistDetailPage() {
                   )}
 
                   <div className="flex flex-col gap-2 pt-2">
-                    <button className="flex items-center justify-center gap-2 rounded-full border border-border px-4 py-3 text-sm hover:border-foreground transition-colors">
-                      <Volume2 size={16} /> Audio guía
-                    </button>
                     {artist.email && !modalArtwork.sold && (
                       <a
                         href={`mailto:${artist.email}?subject=Compra: ${modalArtwork.title}`}

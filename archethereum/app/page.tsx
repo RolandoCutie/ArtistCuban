@@ -10,12 +10,15 @@ import connectDB from '@/lib/mongodb'
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 async function getData() {
   try {
     await connectDB()
     const [artists, featuredArtists, exhibitions, events] = await Promise.all([
-      Artist.find({}).sort({ createdAt: -1 }).limit(100).lean(),
-      Artist.find({ is_featured: true }).sort({ createdAt: -1 }).limit(6).lean(),
+      Artist.find({ is_active: true }).sort({ createdAt: -1 }).limit(200).lean(),
+      Artist.find({ is_featured: true, is_active: true }).sort({ createdAt: -1 }).limit(6).lean(),
       Exhibition.find({}).sort({ date: -1 }).limit(4).lean(),
       Event.find({}).sort({ date: 1 }).limit(4).lean(),
     ])

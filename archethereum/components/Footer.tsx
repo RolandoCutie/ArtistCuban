@@ -7,7 +7,6 @@ const siteLinks = [
   { label: 'Galería Virtual', href: '/galeria-virtual' },
   { label: 'Eventos', href: '/#eventos' },
   { label: 'Categorías', href: '/#categorias' },
-  { label: 'Dashboard', href: '/dashboard' },
 ]
 
 const legalLinks = [

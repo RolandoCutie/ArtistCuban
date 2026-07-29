@@ -52,6 +52,7 @@ export default function ExhibitionManager({ artistId }: ExhibitionManagerProps) 
   const [coverUrl, setCoverUrl] = useState('')
   const [selectedArtworkIds, setSelectedArtworkIds] = useState<string[]>([])
   const [selectedArtistId, setSelectedArtistId] = useState(artistId || '')
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const { register, handleSubmit, reset, watch } = useForm<FormData>()
   const watchArtistId = watch('artist_id', artistId)
@@ -112,23 +113,29 @@ export default function ExhibitionManager({ artistId }: ExhibitionManagerProps) 
   }
 
   const onSubmit = async (data: FormData) => {
-    const payload = { ...data, cover_url: coverUrl, artwork_ids: selectedArtworkIds }
+    if (isSubmitting) return
+    setIsSubmitting(true)
+    try {
+      const payload = { ...data, cover_url: coverUrl, artwork_ids: selectedArtworkIds }
 
-    if (editing) {
-      await fetch(`/api/exhibitions/${editing._id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      })
-    } else {
-      await fetch('/api/exhibitions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      })
+      if (editing) {
+        await fetch(`/api/exhibitions/${editing._id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        })
+      } else {
+        await fetch('/api/exhibitions', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        })
+      }
+      cancel()
+      fetchData()
+    } finally {
+      setIsSubmitting(false)
     }
-    cancel()
-    fetchData()
   }
 
   const deleteExhibition = async (id: string) => {
@@ -229,8 +236,12 @@ export default function ExhibitionManager({ artistId }: ExhibitionManagerProps) 
         </div>
 
         <div className="flex gap-3 pt-4">
-          <button type="submit" className="rounded-full bg-foreground px-8 py-3 text-sm text-background hover:bg-foreground/90 transition-colors">
-            {editing ? 'Actualizar exposición' : 'Crear exposición'}
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="rounded-full bg-foreground px-8 py-3 text-sm text-background hover:bg-foreground/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isSubmitting ? 'Guardando...' : editing ? 'Actualizar exposición' : 'Crear exposición'}
           </button>
           <button type="button" onClick={cancel} className="rounded-full border border-border px-8 py-3 text-sm hover:border-foreground transition-colors">
             Cancelar

@@ -6,11 +6,10 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 
 const navLinks = [
-  { label: 'Artistas', href: '/#artistas' },
+  { label: 'Artistas', href: '/artistas' },
   { label: 'Galería Virtual', href: '/galeria-virtual' },
   { label: 'Eventos', href: '/#eventos' },
   { label: 'Categorías', href: '/#categorias' },
-  { label: 'Dashboard', href: '/dashboard' },
 ]
 
 export default function Navbar() {

@@ -25,7 +25,7 @@ export async function PUT(
     await connectDB()
     const { id } = await params
     const body = await req.json()
-    const exhibition = await Exhibition.findByIdAndUpdate(id, body, { new: true, runValidators: true })
+    const exhibition = await Exhibition.findByIdAndUpdate(id, body, { returnDocument: 'after', runValidators: true })
     if (!exhibition) return NextResponse.json({ error: 'No encontrado' }, { status: 404 })
     return NextResponse.json(exhibition)
   } catch {

@@ -8,7 +8,6 @@ import {
     Share2,
     ShoppingBag,
     Sun,
-    Volume2,
     X
 } from 'lucide-react'
 import Link from 'next/link'
@@ -385,9 +384,6 @@ export default function ExhibitionDetailPage() {
                   )}
 
                   <div className="flex flex-col gap-2">
-                    <button className="flex items-center justify-center gap-2 rounded-full border border-border px-4 py-3 text-sm hover:border-foreground transition-colors">
-                      <Volume2 size={16} /> Audio guía
-                    </button>
                     {!activeArtwork.sold && exhibition.artist_id && (
                       <a
                         href={`/artista/${exhibition.artist_id}`}

@@ -1,5 +1,32 @@
 import mongoose, { Document, Model, Schema } from 'mongoose'
 
+export type ArtistTemplate = 'template1' | 'template2' | 'template3' | 'template4' | 'template5' | 'template6'
+
+export interface ISocialLinks {
+  facebook?: string
+  instagram?: string
+  tiktok?: string
+  youtube?: string
+  behance?: string
+  linkedin?: string
+  pinterest?: string
+  twitter?: string
+  website?: string
+}
+
+export interface IArtistSections {
+  bio: boolean
+  artworks: boolean
+  exhibitions: boolean
+  services: boolean
+  social: boolean
+  contact: boolean
+  gallery: boolean
+  awards: boolean
+  influences: boolean
+  education: boolean
+}
+
 export interface IArtist extends Document {
   name: string
   alias?: string
@@ -22,8 +49,11 @@ export interface IArtist extends Document {
   email?: string
   phone?: string
   whatsapp?: string
-  social_links?: Record<string, string>
+  social_links?: ISocialLinks
   is_featured: boolean
+  is_active: boolean
+  template: ArtistTemplate
+  sections: IArtistSections
   inspiring_quote?: string
   created_date: Date
 }
@@ -60,10 +90,48 @@ const ArtistSchema = new Schema<IArtist>(
     email: String,
     phone: String,
     whatsapp: String,
-    social_links: { type: Schema.Types.Mixed, default: {} },
+    social_links: {
+      type: {
+        facebook: String,
+        instagram: String,
+        tiktok: String,
+        youtube: String,
+        behance: String,
+        linkedin: String,
+        pinterest: String,
+        twitter: String,
+        website: String,
+      },
+      default: {},
+    },
     is_featured: { type: Boolean, default: false },
+    is_active: { type: Boolean, default: true, index: true },
+    template: {
+      type: String,
+      enum: ['template1', 'template2', 'template3', 'template4', 'template5', 'template6'],
+      default: 'template1',
+    },
     inspiring_quote: String,
     created_date: { type: Date, default: Date.now },
+    sections: {
+      type: {
+        bio: { type: Boolean, default: true },
+        artworks: { type: Boolean, default: true },
+        exhibitions: { type: Boolean, default: true },
+        services: { type: Boolean, default: true },
+        social: { type: Boolean, default: true },
+        contact: { type: Boolean, default: true },
+        gallery: { type: Boolean, default: false },
+        awards: { type: Boolean, default: false },
+        influences: { type: Boolean, default: false },
+        education: { type: Boolean, default: false },
+      },
+      default: {
+        bio: true, artworks: true, exhibitions: true, services: true,
+        social: true, contact: true, gallery: false, awards: false,
+        influences: false, education: false,
+      },
+    },
   },
   { timestamps: true, collection: 'artisthub/artists' }
 )

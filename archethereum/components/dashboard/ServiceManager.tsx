@@ -3,6 +3,7 @@
 import { Pencil, Trash2 } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import IconPicker from './IconPicker'
 
 interface Service {
   _id: string
@@ -14,12 +15,7 @@ interface Service {
 
 interface Artist { _id: string; name: string }
 interface ServiceManagerProps { artistId?: string }
-type FormData = Omit<Service, '_id'>
-
-const ICON_OPTIONS = [
-  'Brush', 'GraduationCap', 'Compass', 'Building2', 'Gem',
-  'Sparkles', 'Palette', 'PenTool', 'Lightbulb', 'Heart', 'Star', 'Award',
-]
+type FormData = Omit<Service, '_id' | 'icon_name'>
 
 export default function ServiceManager({ artistId }: ServiceManagerProps) {
   const [services, setServices] = useState<Service[]>([])
@@ -27,6 +23,8 @@ export default function ServiceManager({ artistId }: ServiceManagerProps) {
   const [loading, setLoading] = useState(true)
   const [editing, setEditing] = useState<Service | null>(null)
   const [creating, setCreating] = useState(false)
+  const [iconName, setIconName] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const { register, handleSubmit, reset } = useForm<FormData>()
 
@@ -49,33 +47,42 @@ export default function ServiceManager({ artistId }: ServiceManagerProps) {
   const startEdit = (service: Service) => {
     setEditing(service)
     setCreating(false)
+    setIconName(service.icon_name || '')
     reset({ ...service })
   }
 
   const startCreate = () => {
     setEditing(null)
     setCreating(true)
+    setIconName('')
     reset({ artist_id: artistId || '' })
   }
 
   const cancel = () => { setEditing(null); setCreating(false) }
 
   const onSubmit = async (data: FormData) => {
-    if (editing) {
-      await fetch(`/api/services/${editing._id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      })
-    } else {
-      await fetch('/api/services', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      })
+    if (isSubmitting) return
+    setIsSubmitting(true)
+    try {
+      const payload = { ...data, icon_name: iconName }
+      if (editing) {
+        await fetch(`/api/services/${editing._id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        })
+      } else {
+        await fetch('/api/services', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        })
+      }
+      cancel()
+      fetchData()
+    } finally {
+      setIsSubmitting(false)
     }
-    cancel()
-    fetchData()
   }
 
   const deleteService = async (id: string) => {
@@ -103,10 +110,7 @@ export default function ServiceManager({ artistId }: ServiceManagerProps) {
           )}
           <div>
             <label className="mb-1 block text-xs uppercase tracking-widest text-foreground/40">Icono</label>
-            <select {...register('icon_name')} className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm focus:border-foreground focus:outline-none">
-              <option value="">Sin icono</option>
-              {ICON_OPTIONS.map((icon) => <option key={icon} value={icon}>{icon}</option>)}
-            </select>
+            <IconPicker value={iconName} onChange={setIconName} />
           </div>
         </div>
         <div>
@@ -115,8 +119,12 @@ export default function ServiceManager({ artistId }: ServiceManagerProps) {
         </div>
 
         <div className="flex gap-3">
-          <button type="submit" className="rounded-full bg-foreground px-8 py-3 text-sm text-background hover:bg-foreground/90 transition-colors">
-            {editing ? 'Actualizar servicio' : 'Crear servicio'}
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="rounded-full bg-foreground px-8 py-3 text-sm text-background hover:bg-foreground/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isSubmitting ? 'Guardando...' : editing ? 'Actualizar servicio' : 'Crear servicio'}
           </button>
           <button type="button" onClick={cancel} className="rounded-full border border-border px-8 py-3 text-sm hover:border-foreground transition-colors">
             Cancelar
