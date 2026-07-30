@@ -1,0 +1,5 @@
+# Ignore Vercel generated files
+.vercel
+
+# macOS
+.DS_Store

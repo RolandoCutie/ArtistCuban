@@ -1,0 +1,7 @@
+{
+  "framework": "nextjs",
+  "buildCommand": "cd archethereum && npm run build",
+  "outputDirectory": "archethereum/.next",
+  "installCommand": "cd archethereum && npm install",
+  "devCommand": "cd archethereum && npm run dev"
+}
