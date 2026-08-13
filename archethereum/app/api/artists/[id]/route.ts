@@ -1,5 +1,6 @@
 import Artist from '@/lib/models/Artist'
 import connectDB from '@/lib/mongodb'
+import { slugify } from '@/lib/slug'
 import mongoose from 'mongoose'
 import { NextRequest, NextResponse } from 'next/server'
 
@@ -11,9 +12,26 @@ export async function GET(
     await connectDB()
     const { id } = await params
     const isObjectId = mongoose.Types.ObjectId.isValid(id) && String(new mongoose.Types.ObjectId(id)) === id
-    const artist = isObjectId
-      ? await Artist.findById(id).lean()
-      : await Artist.findOne({ slug: id }).lean()
+
+    let artist = null
+
+    if (isObjectId) {
+      artist = await Artist.findById(id).lean()
+    } else {
+      // 1. Buscar por slug almacenado en BD
+      artist = await Artist.findOne({ slug: id }).lean()
+
+      // 2. Fallback: buscar todos y comparar slug generado desde nombre
+      //    (cubre artistas creados antes de que se añadiera el campo slug)
+      if (!artist) {
+        const all = await Artist.find({}).select('name slug _id').lean()
+        const match = all.find((a) => slugify(a.name) === id)
+        if (match) {
+          artist = await Artist.findById(match._id).lean()
+        }
+      }
+    }
+
     if (!artist) return NextResponse.json({ error: 'No encontrado' }, { status: 404 })
     return NextResponse.json(artist)
   } catch {
@@ -29,6 +47,10 @@ export async function PUT(
     await connectDB()
     const { id } = await params
     const body = await req.json()
+    // Asegura que el slug siempre exista (se regenera al cambiar el nombre)
+    if (body.name) {
+      body.slug = slugify(body.name)
+    }
     const artist = await Artist.findByIdAndUpdate(id, body, { returnDocument: 'after', runValidators: true })
     if (!artist) return NextResponse.json({ error: 'No encontrado' }, { status: 404 })
     return NextResponse.json(artist)

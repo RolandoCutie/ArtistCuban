@@ -54,7 +54,8 @@ const EMPTY_FORM = {
   data_protection: 'Los datos personales serán tratados conforme al Reglamento General de Protección de Datos (RGPD) y la normativa aplicable.',
   limitation_of_liability: 'La responsabilidad máxima del proveedor queda limitada al importe total del contrato. No se responderá por daños indirectos, lucro cesante o pérdida de datos.',
   governing_law: 'España. Juzgados y Tribunales de Madrid.',
-  client_obligations: '', provider_obligations: '',
+  client_obligations: `El cliente se compromete a:\n• Proporcionar los materiales, referencias e información necesaria en los plazos acordados.\n• Responder a las solicitudes de revisión o aprobación en un plazo máximo de 5 días hábiles.\n• Designar a un interlocutor con capacidad de decisión durante toda la vigencia del contrato.\n• Realizar los pagos en las fechas y condiciones establecidas.\n• No solicitar trabajos fuera del alcance definido sin previa solicitud de cambio y presupuesto adicional.`,
+  provider_obligations: `El proveedor se compromete a:\n• Ejecutar el proyecto con diligencia, profesionalidad y los más altos estándares de calidad.\n• Respetar los plazos de entrega acordados o notificar con antelación suficiente cualquier desviación justificada.\n• Mantener al cliente informado del progreso del trabajo con la periodicidad pactada.\n• Aplicar los conocimientos técnicos y creativos necesarios para lograr los objetivos del contrato.\n• Guardar confidencialidad sobre toda la información sensible compartida por el cliente.\n• Entregar los archivos finales en los formatos acordados, libres de cargas o reclamaciones de terceros.`,
   warranty_months: '3', internal_notes: '',
   duration_months: '', auto_renew: false,
 }

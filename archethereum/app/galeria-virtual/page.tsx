@@ -21,6 +21,7 @@ async function getExhibitions() {
     const exhibitions = await Exhibition.find().sort({ date: -1 }).limit(50).lean()
     return exhibitions.map((e) => ({
       _id: String(e._id),
+      slug: e.slug,
       title: e.title,
       curator: e.curator,
       artist_name: e.artist_name,
@@ -131,6 +132,7 @@ function ExhibitionCard({
 }: {
   exhibition: {
     _id: string
+    slug?: string
     title: string
     curator?: string
     artist_name?: string
@@ -143,7 +145,7 @@ function ExhibitionCard({
 }) {
   return (
     <Link
-      href={`/exposicion/${exhibition._id}`}
+      href={`/exposicion/${exhibition.slug || exhibition._id}`}
       className="group relative overflow-hidden block"
       data-cursor="view"
     >

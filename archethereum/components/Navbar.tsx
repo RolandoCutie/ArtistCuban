@@ -40,6 +40,14 @@ export default function Navbar() {
     }
   }
 
+  const textClass = scrolled
+    ? 'text-foreground'
+    : 'text-white drop-shadow-[0_1px_6px_rgba(0,0,0,0.55)]'
+  const mutedTextClass = scrolled
+    ? 'text-foreground/70 hover:text-foreground'
+    : 'text-white/85 hover:text-white'
+  const lineClass = scrolled ? 'bg-foreground' : 'bg-white'
+
   return (
     <>
       <motion.header
@@ -48,13 +56,13 @@ export default function Navbar() {
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
           scrolled
-            ? 'bg-background shadow-sm py-3'
-            : 'bg-transparent py-5'
+            ? 'bg-background/95 backdrop-blur-sm shadow-sm py-3'
+            : 'bg-gradient-to-b from-black/60 via-black/20 to-transparent py-5'
         }`}
       >
         <div className="mx-auto flex max-w-[1600px] items-center justify-between px-6 lg:px-12">
           {/* Logo */}
-          <Link href="/" className="font-heading text-2xl font-medium tracking-tight">
+          <Link href="/" className={`font-heading text-2xl font-medium tracking-tight transition-colors duration-300 ${textClass}`}>
             Arch<span className="italic">ethereum</span>
           </Link>
 
@@ -64,10 +72,10 @@ export default function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="group relative text-sm font-medium tracking-wide text-foreground/70 hover:text-foreground transition-colors"
+                className={`group relative text-sm font-medium tracking-wide transition-colors duration-300 ${mutedTextClass}`}
               >
                 {link.label}
-                <span className="absolute -bottom-1 left-0 h-px w-0 bg-foreground transition-all duration-300 group-hover:w-full" />
+                <span className={`absolute -bottom-1 left-0 h-px w-0 transition-all duration-300 group-hover:w-full ${lineClass}`} />
               </Link>
             ))}
           </nav>
@@ -76,13 +84,13 @@ export default function Navbar() {
           <div className="flex items-center gap-2">
             <button
               onClick={toggleTheme}
-              className="h-10 w-10 rounded-full flex items-center justify-center text-foreground/70 hover:text-foreground transition-colors"
+              className={`h-10 w-10 rounded-full flex items-center justify-center transition-colors duration-300 ${mutedTextClass}`}
               aria-label="Cambiar tema"
             >
               {isDark ? <Sun size={18} /> : <Moon size={18} />}
             </button>
             <button
-              className="h-10 w-10 rounded-full flex items-center justify-center text-foreground/70 hover:text-foreground transition-colors lg:hidden"
+              className={`h-10 w-10 rounded-full flex items-center justify-center transition-colors duration-300 lg:hidden ${mutedTextClass}`}
               onClick={() => setMenuOpen(!menuOpen)}
               aria-label="Menú"
             >

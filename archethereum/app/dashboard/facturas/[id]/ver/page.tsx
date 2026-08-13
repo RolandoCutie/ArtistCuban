@@ -87,8 +87,6 @@ export default function FacturaVerPage() {
   }
 
   const status = STATUS_MAP[invoice.status] || { label: invoice.status, color: '#6b7280' }
-
-  // If no items array, fallback to legacy single-line format
   const hasItems = invoice.items && invoice.items.length > 0
 
   return (
@@ -106,86 +104,90 @@ export default function FacturaVerPage() {
         </button>
       </div>
 
-      {/* Documento */}
-      <div ref={printRef} className="mx-auto max-w-3xl bg-white px-12 py-10 font-sans text-gray-900 print:max-w-none print:px-16 print:py-12">
+      {/* Documento premium */}
+      <div ref={printRef} className="mx-auto max-w-3xl bg-white font-sans text-gray-900 print:max-w-none">
 
-        {/* Cabecera */}
-        <div className="mb-10 flex items-start justify-between">
+        {/* Banda superior de color */}
+        <div className="h-2 w-full bg-gray-900" />
+
+        {/* Cabecera con branding */}
+        <div className="flex items-start justify-between px-12 pt-10 pb-8 border-b border-gray-100">
           <div>
-            <h1 className="text-4xl font-bold tracking-tight text-gray-900">FACTURA</h1>
-            <p className="mt-2 text-lg font-semibold text-gray-700">{invoice.number}</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.35em] text-gray-400 mb-2">Archethereum</p>
+            <h1 className="text-5xl font-light tracking-tight text-gray-900 leading-none">FACTURA</h1>
+            <p className="mt-3 font-mono text-base font-semibold text-gray-500">{invoice.number}</p>
           </div>
           <div className="text-right">
-            {/* Estado */}
             <span
-              className="inline-block rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-widest"
+              className="inline-block rounded-sm px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em]"
               style={{ backgroundColor: `${status.color}18`, color: status.color, border: `1px solid ${status.color}40` }}
             >
               {status.label}
             </span>
-            <p className="mt-2 text-sm text-gray-500">
-              Emisión: <strong>{invoice.issue_date}</strong>
-            </p>
-            {invoice.due_date && (
-              <p className="text-sm text-gray-500">
-                Vencimiento: <strong>{invoice.due_date}</strong>
-              </p>
-            )}
+            <div className="mt-4 space-y-1 text-sm text-gray-500">
+              <p>Emisión: <span className="font-semibold text-gray-700">{new Date(invoice.issue_date).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}</span></p>
+              {invoice.due_date && (
+                <p>Vencimiento: <span className="font-semibold text-gray-700">{new Date(invoice.due_date).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}</span></p>
+              )}
+              {invoice.paid_date && (
+                <p className="text-green-700">Pagada: <span className="font-semibold">{new Date(invoice.paid_date).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}</span></p>
+              )}
+            </div>
           </div>
         </div>
 
         {/* Emisor / Cliente */}
-        <div className="mb-10 grid grid-cols-2 gap-8">
+        <div className="grid grid-cols-2 gap-8 px-12 py-8 bg-gray-50/60">
           <div>
-            <p className="mb-2 text-xs font-bold uppercase tracking-widest text-gray-400">Proveedor de servicios</p>
-            <p className="font-bold text-gray-900">Archethereum</p>
-            <p className="text-sm text-gray-600">{invoice.artist_name}</p>
+            <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.3em] text-gray-400">Prestador de servicios</p>
+            <p className="font-bold text-gray-900 text-base">Archethereum</p>
+            <p className="text-sm text-gray-600 mt-0.5">{invoice.artist_name}</p>
           </div>
           <div>
-            <p className="mb-2 text-xs font-bold uppercase tracking-widest text-gray-400">Facturado a</p>
+            <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.3em] text-gray-400">Facturado a</p>
             {invoice.client_name ? (
-              <>
-                <p className="font-bold text-gray-900">{invoice.client_name}</p>
-                {invoice.client_id_number && <p className="text-sm text-gray-600">NIF/CIF: {invoice.client_id_number}</p>}
-                {invoice.client_address && <p className="text-sm text-gray-600">{invoice.client_address}</p>}
-                {invoice.client_email && <p className="text-sm text-gray-600">{invoice.client_email}</p>}
-              </>
+              <div className="space-y-0.5">
+                <p className="font-bold text-gray-900 text-base">{invoice.client_name}</p>
+                {invoice.client_id_number && <p className="text-sm text-gray-500">NIF/CIF: {invoice.client_id_number}</p>}
+                {invoice.client_address && <p className="text-sm text-gray-500">{invoice.client_address}</p>}
+                {invoice.client_email && <p className="text-sm text-gray-500">{invoice.client_email}</p>}
+              </div>
             ) : (
-              <p className="text-sm text-gray-400 italic">Cliente no especificado</p>
+              <p className="text-sm text-gray-400 italic">Sin datos de cliente</p>
             )}
           </div>
         </div>
 
-        {/* Líneas de factura */}
-        <div className="mb-8">
+        {/* Tabla de líneas */}
+        <div className="px-12 py-8">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b-2 border-gray-900">
-                <th className="pb-3 text-left font-bold text-gray-900">Descripción</th>
-                <th className="pb-3 text-center font-bold text-gray-900 w-16">Cant.</th>
-                <th className="pb-3 text-right font-bold text-gray-900 w-28">Precio unit.</th>
-                <th className="pb-3 text-right font-bold text-gray-900 w-16">IVA</th>
-                <th className="pb-3 text-right font-bold text-gray-900 w-28">Subtotal</th>
+              <tr className="bg-gray-900 text-white">
+                <th className="px-4 py-3 text-left font-medium text-[11px] uppercase tracking-widest rounded-tl">Descripción</th>
+                <th className="px-4 py-3 text-center font-medium text-[11px] uppercase tracking-widest w-16">Cant.</th>
+                <th className="px-4 py-3 text-right font-medium text-[11px] uppercase tracking-widest w-28">Precio</th>
+                <th className="px-4 py-3 text-right font-medium text-[11px] uppercase tracking-widest w-16">IVA</th>
+                <th className="px-4 py-3 text-right font-medium text-[11px] uppercase tracking-widest w-28 rounded-tr">Importe</th>
               </tr>
             </thead>
             <tbody>
               {hasItems ? (
                 invoice.items.map((item, i) => (
-                  <tr key={i} className="border-b border-gray-100">
-                    <td className="py-3 pr-4">{item.description}</td>
-                    <td className="py-3 text-center">{item.quantity}</td>
-                    <td className="py-3 text-right">{EUR(item.unit_price, invoice.currency)}</td>
-                    <td className="py-3 text-center text-gray-500">{item.tax_rate}%</td>
-                    <td className="py-3 text-right font-medium">{EUR(item.subtotal, invoice.currency)}</td>
+                  <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-gray-50/70'}>
+                    <td className="px-4 py-3 text-gray-700">{item.description}</td>
+                    <td className="px-4 py-3 text-center text-gray-500">{item.quantity}</td>
+                    <td className="px-4 py-3 text-right text-gray-700">{EUR(item.unit_price, invoice.currency)}</td>
+                    <td className="px-4 py-3 text-right text-gray-400">{item.tax_rate}%</td>
+                    <td className="px-4 py-3 text-right font-semibold text-gray-900">{EUR(item.subtotal, invoice.currency)}</td>
                   </tr>
                 ))
               ) : (
-                <tr className="border-b border-gray-100">
-                  <td className="py-3 pr-4">{invoice.concept || 'Servicios profesionales'}</td>
-                  <td className="py-3 text-center">1</td>
-                  <td className="py-3 text-right">{EUR(invoice.subtotal, invoice.currency)}</td>
-                  <td className="py-3 text-center text-gray-500">{invoice.tax_rate}%</td>
-                  <td className="py-3 text-right font-medium">{EUR(invoice.subtotal, invoice.currency)}</td>
+                <tr className="bg-white">
+                  <td className="px-4 py-3 text-gray-700">{invoice.concept || 'Servicios profesionales'}</td>
+                  <td className="px-4 py-3 text-center text-gray-500">1</td>
+                  <td className="px-4 py-3 text-right text-gray-700">{EUR(invoice.subtotal, invoice.currency)}</td>
+                  <td className="px-4 py-3 text-right text-gray-400">{invoice.tax_rate}%</td>
+                  <td className="px-4 py-3 text-right font-semibold text-gray-900">{EUR(invoice.subtotal, invoice.currency)}</td>
                 </tr>
               )}
             </tbody>
@@ -193,73 +195,76 @@ export default function FacturaVerPage() {
         </div>
 
         {/* Totales */}
-        <div className="mb-10 flex justify-end">
-          <div className="w-72">
-            <div className="space-y-2 border-t border-gray-200 pt-4">
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Subtotal</span>
-                <span>{EUR(invoice.subtotal, invoice.currency)}</span>
-              </div>
-              {invoice.discount > 0 && (
-                <div className="flex justify-between text-sm text-red-600">
-                  <span>Descuento</span>
-                  <span>– {EUR(invoice.discount, invoice.currency)}</span>
+        <div className="flex justify-end px-12 pb-10">
+          <div className="w-80">
+            <div className="rounded-lg border border-gray-200 overflow-hidden">
+              <div className="space-y-0 divide-y divide-gray-100">
+                <div className="flex justify-between px-5 py-2.5 text-sm">
+                  <span className="text-gray-500">Subtotal</span>
+                  <span className="text-gray-700 font-medium">{EUR(invoice.subtotal, invoice.currency)}</span>
                 </div>
-              )}
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-600">IVA ({invoice.tax_rate}%)</span>
-                <span>{EUR(invoice.tax_amount, invoice.currency)}</span>
-              </div>
-              <div className="flex justify-between border-t-2 border-gray-900 pt-3 font-bold text-lg">
-                <span>TOTAL</span>
-                <span>{EUR(invoice.total, invoice.currency)}</span>
-              </div>
-              {invoice.amount_paid > 0 && (
-                <>
-                  <div className="flex justify-between text-sm text-green-700">
-                    <span>Importe abonado</span>
-                    <span>– {EUR(invoice.amount_paid, invoice.currency)}</span>
+                {invoice.discount > 0 && (
+                  <div className="flex justify-between px-5 py-2.5 text-sm">
+                    <span className="text-gray-500">Descuento</span>
+                    <span className="text-red-600 font-medium">– {EUR(invoice.discount, invoice.currency)}</span>
                   </div>
-                  <div className="flex justify-between font-semibold text-base border-t border-gray-200 pt-2">
-                    <span>Saldo pendiente</span>
-                    <span className={invoice.amount_pending > 0 ? 'text-red-600' : 'text-green-700'}>
-                      {EUR(invoice.amount_pending, invoice.currency)}
-                    </span>
-                  </div>
-                </>
-              )}
+                )}
+                <div className="flex justify-between px-5 py-2.5 text-sm">
+                  <span className="text-gray-500">IVA ({invoice.tax_rate}%)</span>
+                  <span className="text-gray-700 font-medium">{EUR(invoice.tax_amount, invoice.currency)}</span>
+                </div>
+                <div className="flex justify-between px-5 py-4 bg-gray-900 text-white">
+                  <span className="text-sm font-bold uppercase tracking-widest">Total</span>
+                  <span className="text-xl font-bold">{EUR(invoice.total, invoice.currency)}</span>
+                </div>
+                {invoice.amount_paid > 0 && (
+                  <>
+                    <div className="flex justify-between px-5 py-2.5 text-sm bg-green-50">
+                      <span className="text-green-700">Importe abonado</span>
+                      <span className="text-green-700 font-medium">– {EUR(invoice.amount_paid, invoice.currency)}</span>
+                    </div>
+                    <div className="flex justify-between px-5 py-2.5 text-sm font-semibold bg-gray-50">
+                      <span className={invoice.amount_pending > 0 ? 'text-red-600' : 'text-green-700'}>
+                        {invoice.amount_pending > 0 ? 'Saldo pendiente' : '✓ Saldado'}
+                      </span>
+                      <span className={invoice.amount_pending > 0 ? 'text-red-600' : 'text-green-700'}>
+                        {EUR(invoice.amount_pending, invoice.currency)}
+                      </span>
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Forma de pago */}
+        {/* Método de pago */}
         {invoice.payment_method && (
-          <div className="mb-6 rounded-lg bg-gray-50 px-5 py-4">
-            <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-1">Forma de pago</p>
-            <p className="text-sm text-gray-700">{invoice.payment_method}</p>
+          <div className="mx-12 mb-6 flex items-center gap-3 rounded-lg bg-gray-50 border border-gray-100 px-5 py-3">
+            <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-gray-400">Forma de pago</span>
+            <span className="text-sm text-gray-700 font-medium">{invoice.payment_method}</span>
           </div>
         )}
 
         {/* Historial de pagos */}
         {invoice.payment_records && invoice.payment_records.length > 0 && (
-          <div className="mb-8">
-            <p className="mb-3 text-xs font-bold uppercase tracking-widest text-gray-400">Historial de pagos</p>
+          <div className="px-12 mb-8">
+            <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.3em] text-gray-400">Historial de pagos</p>
             <table className="w-full text-sm border border-gray-200 rounded-lg overflow-hidden">
               <thead className="bg-gray-100">
                 <tr>
-                  <th className="px-4 py-2 text-left font-semibold">Fecha</th>
-                  <th className="px-4 py-2 text-right font-semibold">Importe</th>
-                  <th className="px-4 py-2 text-left font-semibold">Método</th>
-                  <th className="px-4 py-2 text-left font-semibold">Nota</th>
+                  {['Fecha', 'Importe', 'Método', 'Nota'].map((h) => (
+                    <th key={h} className="px-4 py-2 text-left text-[10px] font-bold uppercase tracking-widest text-gray-500">{h}</th>
+                  ))}
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="divide-y divide-gray-100">
                 {invoice.payment_records.map((p, i) => (
-                  <tr key={i} className="border-t border-gray-100">
-                    <td className="px-4 py-2">{p.date}</td>
-                    <td className="px-4 py-2 text-right font-medium text-green-700">{EUR(p.amount, invoice.currency)}</td>
-                    <td className="px-4 py-2">{p.method || '—'}</td>
-                    <td className="px-4 py-2 text-gray-500">{p.note || '—'}</td>
+                  <tr key={i}>
+                    <td className="px-4 py-2.5 text-gray-700">{p.date}</td>
+                    <td className="px-4 py-2.5 font-semibold text-green-700">{EUR(p.amount, invoice.currency)}</td>
+                    <td className="px-4 py-2.5 text-gray-500">{p.method || '—'}</td>
+                    <td className="px-4 py-2.5 text-gray-400">{p.note || '—'}</td>
                   </tr>
                 ))}
               </tbody>
@@ -267,25 +272,33 @@ export default function FacturaVerPage() {
           </div>
         )}
 
-        {/* Notas para el cliente */}
+        {/* Notas cliente */}
         {invoice.client_notes && (
-          <div className="mb-8 rounded-lg border border-gray-200 px-5 py-4">
-            <p className="mb-1 text-xs font-bold uppercase tracking-widest text-gray-400">Observaciones</p>
-            <p className="text-sm text-gray-700 whitespace-pre-wrap">{invoice.client_notes}</p>
+          <div className="mx-12 mb-8 rounded-lg border-l-4 border-gray-300 bg-gray-50 px-5 py-4">
+            <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.3em] text-gray-400">Observaciones</p>
+            <p className="text-sm text-gray-600 whitespace-pre-wrap leading-relaxed">{invoice.client_notes}</p>
           </div>
         )}
 
-        {/* Pie */}
-        <div className="mt-12 border-t border-gray-200 pt-6 text-center text-xs text-gray-400">
-          <p>Factura generada el {new Date().toLocaleDateString('es-ES')} · {invoice.number}</p>
-          <p className="mt-0.5">Archethereum — Plataforma Artística Premium</p>
-          <p className="mt-0.5">En caso de discrepancia, contacte a través del email del proveedor.</p>
+        {/* Pie premium */}
+        <div className="mx-12 mt-4 mb-10 border-t border-gray-200 pt-6 flex items-start justify-between">
+          <div className="text-xs text-gray-400 space-y-0.5">
+            <p className="font-semibold text-gray-500">Archethereum — Plataforma Artística Premium</p>
+            <p>En caso de discrepancia, contacte con el proveedor antes de la fecha de vencimiento.</p>
+            <p>Documento generado el {new Date().toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+          </div>
+          <div className="text-right text-xs text-gray-300 font-mono">
+            <p>{invoice.number}</p>
+          </div>
         </div>
+
+        {/* Banda inferior */}
+        <div className="h-1 w-full bg-gray-900" />
       </div>
 
       <style>{`
         @media print {
-          @page { margin: 1.2cm; size: A4; }
+          @page { margin: 0; size: A4; }
           body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
         }
       `}</style>

@@ -3,6 +3,7 @@ import Link from 'next/link'
 
 interface Exhibition {
   _id: string
+  slug?: string
   title: string
   curator?: string
   artist_name?: string
@@ -55,7 +56,7 @@ export default function VirtualGalleryPreview({ exhibitions }: VirtualGalleryPre
             {/* Exposición principal */}
             {active && (
               <Link
-                href={`/exposicion/${active._id}`}
+                href={`/exposicion/${active.slug || active._id}`}
                 className="group relative overflow-hidden lg:row-span-2"
                 data-cursor="view"
               >
@@ -98,7 +99,7 @@ export default function VirtualGalleryPreview({ exhibitions }: VirtualGalleryPre
             {rest.map((ex) => (
               <Link
                 key={ex._id}
-                href={`/exposicion/${ex._id}`}
+                href={`/exposicion/${ex.slug || ex._id}`}
                 className="group relative overflow-hidden"
                 data-cursor="view"
               >

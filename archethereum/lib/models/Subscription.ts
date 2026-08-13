@@ -11,6 +11,7 @@ export interface ISubscription extends Document {
   amount: number
   currency: string
   payment_method?: string
+  notification_email?: string
   notes?: string
   renewals: Array<{
     date: string
@@ -37,6 +38,7 @@ const SubscriptionSchema = new Schema<ISubscription>(
     amount: { type: Number, required: true },
     currency: { type: String, default: 'EUR' },
     payment_method: String,
+    notification_email: String,
     notes: String,
     renewals: [
       {

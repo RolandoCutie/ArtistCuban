@@ -72,8 +72,8 @@ interface Contract {
   createdAt: string
 }
 
-const EUR = (v: number, cur = 'EUR') =>
-  `${v?.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${cur}`
+const EUR = (v: number | undefined | null, cur = 'EUR') =>
+  v == null ? '—' : `${v.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${cur}`
 
 const STATUS_MAP: Record<string, string> = {
   draft: 'Borrador', pending: 'Pendiente firma', active: 'Activo',

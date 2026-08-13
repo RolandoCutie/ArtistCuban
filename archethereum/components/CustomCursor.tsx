@@ -62,9 +62,9 @@ export default function CustomCursor() {
 
   return (
     <>
-      {/* Dot */}
+      {/* Dot — mix-blend-mode:difference hace que sea visible sobre cualquier fondo */}
       <div
-        className="pointer-events-none fixed top-0 left-0 z-[9999] hidden md:block rounded-full bg-foreground transition-opacity duration-200"
+        className="pointer-events-none fixed top-0 left-0 z-[9999] hidden md:block rounded-full transition-opacity duration-200"
         style={{
           width: dotSize,
           height: dotSize,
@@ -72,18 +72,22 @@ export default function CustomCursor() {
           marginLeft: -dotSize / 2,
           marginTop: -dotSize / 2,
           opacity: visible ? 1 : 0,
+          backgroundColor: 'white',
+          mixBlendMode: 'difference',
         }}
       />
       {/* Ring */}
       <motion.div
-        className="pointer-events-none fixed top-0 left-0 z-[9998] hidden md:flex items-center justify-center rounded-full border border-foreground"
+        className="pointer-events-none fixed top-0 left-0 z-[9998] hidden md:flex items-center justify-center rounded-full"
         style={{
           width: ringSize,
           height: ringSize,
           transform: `translate(${ringPos.x}px, ${ringPos.y}px)`,
           marginLeft: -ringSize / 2,
           marginTop: -ringSize / 2,
-          opacity: visible ? 0.5 : 0,
+          opacity: visible ? 1 : 0,
+          border: '1.5px solid white',
+          mixBlendMode: 'difference',
         }}
         animate={{
           width: ringSize,
@@ -94,7 +98,7 @@ export default function CustomCursor() {
         transition={{ type: 'spring', damping: 20, stiffness: 250 }}
       >
         {isPointer && (
-          <span className="text-[8px] uppercase tracking-widest text-foreground select-none">
+          <span className="text-[8px] uppercase tracking-widest text-white select-none">
             Ver
           </span>
         )}

@@ -210,6 +210,30 @@ export const TEMPLATES: TemplateConfig[] = [
     fontBody: "'Georgia', serif",
     accentClass: 'template-terracota',
   },
+  {
+    id: 'template10',
+    name: 'Brutalista',
+    description: 'Estética radical y cruda. Papel claro, contornos gruesos, tipografía en mayúsculas, acentos vibrantes. Ideal para arte urbano, contemporáneo y performance.',
+    preview_bg: 'bg-[#faf7ef]',
+    cssVars: {
+      '--background': '45 33% 96%',
+      '--foreground': '0 0% 8%',
+      '--card': '45 33% 98%',
+      '--card-foreground': '0 0% 8%',
+      '--border': '0 0% 12%',
+      '--muted': '45 25% 90%',
+      '--muted-foreground': '0 0% 38%',
+      '--accent': '47 90% 85%',
+      '--accent-foreground': '0 0% 8%',
+      '--primary': '0 0% 8%',
+      '--primary-foreground': '45 33% 96%',
+      '--ring': '0 0% 8%',
+      '--radius': '0rem',
+    },
+    fontHeading: "'Cormorant Garamond', Georgia, serif",
+    fontBody: "'Inter', ui-sans-serif, system-ui, sans-serif",
+    accentClass: 'template-brutal',
+  },
 ]
 
 export function getTemplate(id?: string): TemplateConfig {

@@ -4,6 +4,17 @@ import { motion } from 'framer-motion'
 import { ArrowUpRight } from 'lucide-react'
 import Link from 'next/link'
 
+/** Genera un slug URL-safe desde el nombre del artista (mismo algoritmo que el modelo) */
+function slugify(name: string): string {
+  return name
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9\s]/g, '')
+    .trim()
+    .replace(/\s+/g, '-')
+}
+
 interface ArtistCardProps {
   artist: {
     _id: string
@@ -19,6 +30,9 @@ interface ArtistCardProps {
 }
 
 export default function ArtistCard({ artist, index = 0 }: ArtistCardProps) {
+  // Usa el slug almacenado; si no existe, genera uno desde el nombre para la URL
+  const artistUrl = `/artista/${artist.slug || slugify(artist.name)}`
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 40 }}
@@ -27,7 +41,7 @@ export default function ArtistCard({ artist, index = 0 }: ArtistCardProps) {
       transition={{ duration: 0.7, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
       className="group"
     >
-      <Link href={`/artista/${artist.slug || artist._id}`}>
+      <Link href={artistUrl}>
         <div className="relative aspect-[3/4] overflow-hidden bg-muted" data-cursor="view">
           {artist.photo_url ? (
             <img

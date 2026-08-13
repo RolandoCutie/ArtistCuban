@@ -13,6 +13,7 @@ import {
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
+import { slugify } from '@/lib/slug'
 
 interface Artwork {
   _id: string
@@ -57,6 +58,7 @@ export default function ExhibitionDetailPage() {
   const [activeArtwork, setActiveArtwork] = useState<Artwork | null>(null)
   const [activeIndex, setActiveIndex] = useState(0)
   const [galleryDark, setGalleryDark] = useState(true)
+  const [artistSlug, setArtistSlug] = useState<string | null>(null)
 
   const fetchData = useCallback(async () => {
     try {
@@ -65,8 +67,13 @@ export default function ExhibitionDetailPage() {
       setExhibition(ex)
 
       if (ex.artist_id) {
-        const awRes = await fetch(`/api/artworks?artist_id=${ex.artist_id}`)
+        const [awRes, artRes] = await Promise.all([
+          fetch(`/api/artworks?artist_id=${ex.artist_id}`),
+          fetch(`/api/artists/${ex.artist_id}`),
+        ])
         const allArtworks: Artwork[] = await awRes.json()
+        const artistData = await artRes.json()
+        setArtistSlug(artistData?.slug || (artistData?.name ? slugify(artistData.name) : null))
         const filtered = ex.artwork_ids?.length
           ? allArtworks.filter((a) => ex.artwork_ids!.includes(a._id))
           : allArtworks
@@ -130,11 +137,13 @@ export default function ExhibitionDetailPage() {
             <div className="img-shimmer h-full w-full" />
           )}
         </div>
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-background" />
+        {/* Gradiente superior tenue + gradiente inferior fuerte para texto siempre legible */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/55 to-transparent" />
 
         <Link
           href="/galeria-virtual"
-          className="absolute left-6 top-24 z-10 text-sm text-white/60 hover:text-white transition-colors lg:left-12"
+          className="absolute left-6 top-24 z-10 flex items-center gap-1 text-sm text-white/80 hover:text-white transition-colors lg:left-12 drop-shadow-[0_1px_4px_rgba(0,0,0,0.5)]"
         >
           ← Galería Virtual
         </Link>
@@ -153,24 +162,24 @@ export default function ExhibitionDetailPage() {
           )}
 
           {exhibition.date && (
-            <p className="mb-2 text-xs uppercase tracking-widest text-white/50">
+            <p className="mb-2 text-xs uppercase tracking-widest text-white/70 drop-shadow-[0_1px_4px_rgba(0,0,0,0.6)]">
               {new Date(exhibition.date).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}
               {exhibition.end_date && ` — ${new Date(exhibition.end_date).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}`}
             </p>
           )}
 
-          <h1 className="font-heading text-5xl font-light leading-none text-white md:text-7xl lg:text-8xl">
+          <h1 className="font-heading text-5xl font-light leading-none text-white drop-shadow-[0_2px_16px_rgba(0,0,0,0.7)] md:text-7xl lg:text-8xl">
             {exhibition.title}
           </h1>
 
           {(exhibition.curator || exhibition.artist_name) && (
-            <p className="mt-3 text-sm text-white/60">
+            <p className="mt-3 text-sm text-white/80 drop-shadow-[0_1px_6px_rgba(0,0,0,0.6)]">
               {[exhibition.curator && `Curado por ${exhibition.curator}`, exhibition.artist_name].filter(Boolean).join(' · ')}
             </p>
           )}
 
           {exhibition.schedule && (
-            <p className="mt-1 text-sm text-white/50">{exhibition.schedule}</p>
+            <p className="mt-1 text-sm text-white/65 drop-shadow-[0_1px_4px_rgba(0,0,0,0.5)]">{exhibition.schedule}</p>
           )}
         </motion.div>
       </section>
@@ -386,7 +395,7 @@ export default function ExhibitionDetailPage() {
                   <div className="flex flex-col gap-2">
                     {!activeArtwork.sold && exhibition.artist_id && (
                       <a
-                        href={`/artista/${exhibition.artist_id}`}
+                        href={`/artista/${artistSlug || exhibition.artist_id}`}
                         className="flex items-center justify-center gap-2 rounded-full bg-foreground px-4 py-3 text-sm text-background hover:bg-foreground/90 transition-colors"
                       >
                         <ShoppingBag size={16} /> Comprar

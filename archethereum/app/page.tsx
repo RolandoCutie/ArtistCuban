@@ -56,6 +56,7 @@ export default async function HomePage() {
 
   const exhibitionsForDisplay = exhibitions.map((e) => ({
     _id: String(e._id),
+    slug: e.slug,
     title: e.title,
     curator: e.curator,
     artist_name: e.artist_name,

@@ -1,6 +1,17 @@
 import Exhibition from '@/lib/models/Exhibition'
 import connectDB from '@/lib/mongodb'
+import mongoose from 'mongoose'
 import { NextRequest, NextResponse } from 'next/server'
+
+async function findExhibition(id: string) {
+  const isObjectId = mongoose.Types.ObjectId.isValid(id) && id.length === 24
+  if (isObjectId) {
+    const doc = await Exhibition.findById(id).lean()
+    if (doc) return doc
+  }
+  // Fallback: lookup by slug
+  return Exhibition.findOne({ slug: id }).lean()
+}
 
 export async function GET(
   _req: NextRequest,
@@ -9,7 +20,7 @@ export async function GET(
   try {
     await connectDB()
     const { id } = await params
-    const exhibition = await Exhibition.findById(id).lean()
+    const exhibition = await findExhibition(id)
     if (!exhibition) return NextResponse.json({ error: 'No encontrado' }, { status: 404 })
     return NextResponse.json(exhibition)
   } catch {

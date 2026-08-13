@@ -2,7 +2,7 @@
 
 import ArtistAutocomplete from '@/components/dashboard/ArtistAutocomplete'
 import DashboardLayout from '@/components/dashboard/DashboardLayout'
-import { Eye, Receipt, Trash2 } from 'lucide-react'
+import { Eye, Pencil, Receipt, Trash2 } from 'lucide-react'
 import Link from 'next/link'
 import { useCallback, useEffect, useState } from 'react'
 
@@ -59,6 +59,7 @@ export default function FacturasPage() {
   const [invoices, setInvoices] = useState<Invoice[]>([])
   const [loading, setLoading] = useState(true)
   const [creating, setCreating] = useState(false)
+  const [editingId, setEditingId] = useState<string | null>(null)
   const [filter, setFilter] = useState('all')
   const [form, setForm] = useState(EMPTY_FORM)
   const [items, setItems] = useState<InvoiceItem[]>([{ ...EMPTY_ITEM }])
@@ -101,6 +102,47 @@ export default function FacturasPage() {
   const discount = parseFloat(form.discount) || 0
   const taxAmount = Math.round(subtotal * (taxRate / 100) * 100) / 100
   const total = Math.round((subtotal + taxAmount - discount) * 100) / 100
+
+  const startEdit = async (inv: Invoice) => {
+    setError('')
+    const res = await fetch(`/api/invoices/${inv._id}`)
+    const full = await res.json()
+    setForm({
+      artist_id: full.artist_id || '',
+      artist_name: full.artist_name || '',
+      client_name: full.client_name || '',
+      client_id_number: full.client_id_number || '',
+      client_email: full.client_email || '',
+      client_address: full.client_address || '',
+      concept: full.concept || '',
+      concept_type: full.concept || 'Membresía anual',
+      subtotal: full.subtotal ? String(full.subtotal) : '',
+      tax_rate: full.tax_rate ? String(full.tax_rate) : '21',
+      discount: full.discount ? String(full.discount) : '0',
+      issue_date: full.issue_date || '',
+      due_date: full.due_date || '',
+      status: full.status || 'pending',
+      payment_method: full.payment_method || 'Transferencia bancaria',
+      client_notes: full.client_notes || '',
+      notes: full.internal_notes || '',
+    })
+    if (full.items && full.items.length > 0) {
+      setUseItems(true)
+      setItems(full.items.map((it: { description: string; quantity: number; unit_price: number; tax_rate: number }) => ({
+        description: it.description,
+        quantity: String(it.quantity),
+        unit_price: String(it.unit_price),
+        tax_rate: String(it.tax_rate),
+      })))
+    } else {
+      setUseItems(false)
+      setItems([{ ...EMPTY_ITEM }])
+    }
+    setEditingId(inv._id)
+    setCreating(false)
+  }
+
+  const closeForm = () => { setCreating(false); setEditingId(null); setForm(EMPTY_FORM); setItems([{ ...EMPTY_ITEM }]); setUseItems(false); setError('') }
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -146,17 +188,14 @@ export default function FacturasPage() {
         payload.tax_rate = parseFloat(form.tax_rate) || 21
       }
 
-      const res = await fetch('/api/invoices', {
-        method: 'POST',
+      const res = await fetch(editingId ? `/api/invoices/${editingId}` : '/api/invoices', {
+        method: editingId ? 'PUT' : 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       })
       const data = await res.json()
-      if (!res.ok) { setError(data.error || 'Error al crear'); return }
-      setCreating(false)
-      setForm(EMPTY_FORM)
-      setItems([{ ...EMPTY_ITEM }])
-      setUseItems(false)
+      if (!res.ok) { setError(data.error || 'Error al guardar'); return }
+      closeForm()
       fetchInvoices()
     } catch { setError('Error de conexión') }
   }
@@ -187,7 +226,7 @@ export default function FacturasPage() {
             <h1 className="font-heading text-4xl font-light">Facturas</h1>
             <p className="mt-1 text-sm text-foreground/50">Facturación y cobros</p>
           </div>
-          <button onClick={() => { setCreating(true); setError('') }}
+          <button onClick={() => { setCreating(true); setEditingId(null); setForm(EMPTY_FORM); setItems([{ ...EMPTY_ITEM }]); setUseItems(false); setError('') }}
             className="rounded-full bg-foreground px-5 py-2.5 text-sm text-background hover:bg-foreground/90 transition-colors">
             + Nueva factura
           </button>
@@ -213,11 +252,11 @@ export default function FacturasPage() {
           ))}
         </div>
 
-        {creating && (
+        {(creating || editingId) && (
           <form onSubmit={handleCreate} className="rounded-xl border border-border bg-card p-6 space-y-6">
             <div className="flex items-center justify-between">
-              <h3 className="font-heading text-2xl font-light">Nueva factura</h3>
-              <button type="button" onClick={() => { setCreating(false); setError('') }} className="text-sm text-foreground/40 hover:text-foreground transition-colors">✕ Cancelar</button>
+              <h3 className="font-heading text-2xl font-light">{editingId ? 'Editar factura' : 'Nueva factura'}</h3>
+              <button type="button" onClick={closeForm} className="text-sm text-foreground/40 hover:text-foreground transition-colors">✕ Cancelar</button>
             </div>
             {error && <p className="rounded-lg border border-red-200 bg-red-50/10 px-4 py-2 text-sm text-red-500">{error}</p>}
 
@@ -381,8 +420,8 @@ export default function FacturasPage() {
             </div>
 
             <div className="flex gap-3">
-              <button type="submit" className="rounded-full bg-foreground px-6 py-2.5 text-sm text-background hover:bg-foreground/90">Crear factura</button>
-              <button type="button" onClick={() => { setCreating(false); setError('') }} className="rounded-full border border-border px-6 py-2.5 text-sm hover:border-foreground">Cancelar</button>
+              <button type="submit" className="rounded-full bg-foreground px-6 py-2.5 text-sm text-background hover:bg-foreground/90">{editingId ? 'Guardar cambios' : 'Crear factura'}</button>
+              <button type="button" onClick={closeForm} className="rounded-full border border-border px-6 py-2.5 text-sm hover:border-foreground">Cancelar</button>
             </div>
           </form>
         )}
@@ -423,6 +462,13 @@ export default function FacturasPage() {
                         >
                           <Eye size={12} /> Ver / PDF
                         </Link>
+                        <button
+                          onClick={() => startEdit(inv)}
+                          title="Editar factura"
+                          className="flex items-center gap-1.5 rounded-lg border border-border px-2.5 py-1.5 text-xs hover:border-foreground hover:bg-muted transition-colors"
+                        >
+                          <Pencil size={12} /> Editar
+                        </button>
                         {inv.status === 'pending' && (
                           <button onClick={() => updateStatus(inv._id, 'paid', new Date().toISOString().split('T')[0])}
                             className="rounded-lg border border-emerald-300 px-2.5 py-1.5 text-[10px] uppercase tracking-widest text-emerald-600 hover:bg-emerald-50 transition-colors">

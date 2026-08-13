@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { MapPin, Search, X } from 'lucide-react'
 import Link from 'next/link'
 import { useMemo, useState } from 'react'
+import { slugify } from '@/lib/slug'
 
 interface Artist {
   _id: string
@@ -129,7 +130,7 @@ export default function HeroSearch({ artists }: HeroSearchProps) {
                   transition={{ duration: 0.3, delay: i * 0.05 }}
                 >
                   <Link
-                    href={`/artista/${artist.slug || artist._id}`}
+                    href={`/artista/${artist.slug || slugify(artist.name)}`}
                     className="flex items-center gap-4 p-4 hover:bg-white/5 transition-colors"
                     onClick={() => { setQuery(''); setActiveCategory(null) }}
                   >

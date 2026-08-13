@@ -1,6 +1,7 @@
 'use client'
 
 import { allSpecialties } from '@/lib/categories'
+import { slugify } from '@/lib/slug'
 import { TEMPLATES } from '@/lib/templates'
 import { ExternalLink, Pencil, Star, Trash2 } from 'lucide-react'
 import Link from 'next/link'
@@ -13,6 +14,7 @@ import ServiceManager from './ServiceManager'
 
 interface Artist {
   _id: string
+  slug?: string
   name: string
   alias?: string
   specialty?: string
@@ -397,7 +399,7 @@ export default function ArtistManager() {
               <h3 className="font-heading text-xl">Plantilla del perfil</h3>
               {editing && (
                 <Link
-                  href={`/artista/${editing._id}`}
+                  href={`/artista/${editing.slug || slugify(editing.name)}`}
                   target="_blank"
                   className="flex items-center gap-1.5 rounded-full border border-border px-4 py-1.5 text-xs hover:border-foreground transition-colors"
                 >
@@ -623,6 +625,14 @@ export default function ArtistManager() {
                 )}
               </div>
               <div className="flex items-center gap-1 shrink-0">
+                <Link
+                  href={`/artista/${artist.slug || slugify(artist.name)}`}
+                  target="_blank"
+                  title="Ver perfil público"
+                  className="h-8 w-8 flex items-center justify-center rounded-full hover:bg-muted transition-colors text-foreground/50"
+                >
+                  <ExternalLink size={13} />
+                </Link>
                 <button onClick={() => startEdit(artist)} className="h-8 w-8 flex items-center justify-center rounded-full hover:bg-muted transition-colors">
                   <Pencil size={14} />
                 </button>

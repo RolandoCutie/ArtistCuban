@@ -44,7 +44,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   return (
     <div className="flex min-h-screen bg-background">
       {/* Sidebar desktop */}
-      <aside className="hidden w-64 shrink-0 border-r border-border lg:flex lg:flex-col">
+      <aside className="hidden w-64 shrink-0 border-r border-border bg-background lg:flex lg:flex-col">
         <div className="flex h-16 items-center gap-2 border-b border-border px-6">
           <Link href="/" className="font-heading text-xl font-medium tracking-tight">
             Arch<span className="italic">ethereum</span>
@@ -63,10 +63,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
                   isActive
                     ? 'bg-foreground text-background'
-                    : 'text-foreground/50 hover:bg-muted hover:text-foreground'
+                    : 'text-foreground/60 hover:bg-muted hover:text-foreground'
                 }`}
               >
-                <Icon size={16} />
+                <Icon size={18} />
                 {item.label}
               </Link>
             )
@@ -92,15 +92,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       </aside>
 
       {/* Mobile header */}
-      <div className="fixed left-0 right-0 top-0 z-50 flex h-16 items-center justify-between border-b border-border bg-background px-4 lg:hidden">
+      <div className="fixed left-0 right-0 top-0 z-40 flex h-16 items-center justify-between border-b border-border bg-background px-4 lg:hidden">
         <Link href="/dashboard" className="font-heading text-xl font-medium">
           Arch<span className="italic">ethereum</span>
         </Link>
         <button
           onClick={() => setMobileOpen(true)}
-          className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-muted"
+          className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-muted transition-colors"
+          aria-label="Abrir menú"
         >
-          <Menu size={20} />
+          <Menu size={22} className="text-foreground" />
         </button>
       </div>
 
@@ -108,11 +109,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {mobileOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <div className="absolute inset-0 bg-black/50" onClick={() => setMobileOpen(false)} />
-          <div className="absolute left-0 top-0 bottom-0 w-72 bg-background shadow-2xl flex flex-col">
+          <div className="absolute left-0 top-0 bottom-0 w-80 bg-background shadow-2xl flex flex-col">
             <div className="flex h-16 items-center justify-between border-b border-border px-6">
               <span className="font-heading text-xl font-medium">Admin</span>
-              <button onClick={() => setMobileOpen(false)}>
-                <X size={20} />
+              <button
+                onClick={() => setMobileOpen(false)}
+                className="hover:text-foreground text-foreground/60 hover:bg-muted rounded-full p-2 transition-colors"
+                aria-label="Cerrar menú"
+              >
+                <X size={22} />
               </button>
             </div>
             <nav className="flex flex-1 flex-col gap-1 overflow-y-auto p-4">
@@ -127,15 +132,32 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
                       isActive
                         ? 'bg-foreground text-background'
-                        : 'text-foreground/50 hover:bg-muted hover:text-foreground'
+                        : 'text-foreground/60 hover:bg-muted hover:text-foreground'
                     }`}
                   >
-                    <Icon size={16} />
+                    <Icon size={18} />
                     {item.label}
                   </Link>
                 )
               })}
             </nav>
+            <div className="border-t border-border p-4 space-y-1">
+              <Link
+                href="/"
+                onClick={() => setMobileOpen(false)}
+                className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs text-foreground/40 hover:text-foreground hover:bg-muted transition-colors"
+              >
+                <ChevronLeft size={14} />
+                Ver sitio público
+              </Link>
+              <button
+                onClick={() => { handleLogout(); setMobileOpen(false); }}
+                className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-xs text-foreground/40 hover:text-red-500 hover:bg-red-50/10 transition-colors"
+              >
+                <LogOut size={14} />
+                Cerrar sesión
+              </button>
+            </div>
           </div>
         </div>
       )}

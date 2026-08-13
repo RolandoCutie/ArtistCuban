@@ -2,9 +2,20 @@ import Subscription from '@/lib/models/Subscription'
 import connectDB from '@/lib/mongodb'
 import { NextRequest, NextResponse } from 'next/server'
 
+/** Auto-expire subscriptions whose end_date has passed and are still active/pending */
+async function autoExpire() {
+  const today = new Date().toISOString().slice(0, 10)
+  await Subscription.updateMany(
+    { end_date: { $lt: today }, status: { $in: ['active', 'pending'] } },
+    { $set: { status: 'expired' } }
+  )
+}
+
 export async function GET(req: NextRequest) {
   try {
     await connectDB()
+    await autoExpire()
+
     const { searchParams } = new URL(req.url)
     const artist_id = searchParams.get('artist_id')
     const status = searchParams.get('status')

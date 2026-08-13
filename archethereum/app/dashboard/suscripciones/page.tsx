@@ -9,7 +9,9 @@ interface Subscription {
   _id: string; artist_id: string; artist_name: string
   start_date: string; end_date: string
   status: 'active' | 'pending' | 'suspended' | 'expired'
-  amount: number; currency: string; payment_method?: string; notes?: string
+  amount: number; currency: string; payment_method?: string
+  notification_email?: string; notes?: string
+  notified_30_days?: boolean; notified_7_days?: boolean
 }
 
 const STATUS_LABEL: Record<string, string> = { active: 'Activa', pending: 'Pendiente', suspended: 'Suspendida', expired: 'Vencida' }
@@ -22,7 +24,7 @@ const STATUS_CLASSES: Record<string, string> = {
 
 const EMPTY_FORM = {
   artist_id: '', artist_name: '', start_date: '', end_date: '',
-  amount: '', currency: 'EUR', payment_method: '', notes: '', status: 'active',
+  amount: '', currency: 'EUR', payment_method: '', notification_email: '', notes: '', status: 'active',
 }
 
 const ic = 'w-full rounded-lg border border-border bg-transparent px-4 py-2.5 text-sm focus:border-foreground focus:outline-none'
@@ -99,6 +101,18 @@ export default function SuscripcionesPage() {
           ))}
         </div>
 
+        {/* Panel informativo */}
+        <div className="rounded-xl border border-border bg-muted/30 p-5 text-sm space-y-2">
+          <p className="text-xs uppercase tracking-widest text-foreground/40 font-medium">Comportamiento del sistema</p>
+          <ul className="space-y-1.5 text-foreground/60">
+            <li><span className="font-medium text-foreground/80">Auto-expiración:</span> Al cargar esta página, las suscripciones activas cuya fecha de fin ha pasado cambian automáticamente a estado <strong>Vencida</strong>.</li>
+            <li><span className="font-medium text-foreground/80">Acceso del artista:</span> El campo <code className="text-xs bg-muted px-1 py-0.5 rounded">is_active</code> del artista es independiente. Una suscripción vencida NO oculta automáticamente el perfil — debes desactivar el artista manualmente si es necesario.</li>
+            <li><span className="font-medium text-foreground/80">Notificaciones:</span> El campo &quot;Email de notificación&quot; guarda el correo para avisos de vencimiento. El envío automático requiere configurar <code className="text-xs bg-muted px-1 py-0.5 rounded">EMAIL_FROM</code> + <code className="text-xs bg-muted px-1 py-0.5 rounded">EMAIL_API_KEY</code> en el entorno (Resend, SendGrid, etc.). Actualmente los avisos son solo visuales en este dashboard.</li>
+            <li><span className="font-medium text-foreground/80">Periodo de gracia:</span> No configurado — vencimiento inmediato al pasar la fecha de fin.</li>
+            <li><span className="font-medium text-foreground/80">Renovación automática:</span> No implementada. Para renovar, actualiza la fecha de fin o crea una nueva suscripción.</li>
+          </ul>
+        </div>
+
         {creating && (
           <form onSubmit={handleCreate} className="rounded-xl border border-border bg-card p-6 space-y-4">
             <h3 className="font-heading text-xl font-light">Nueva suscripción</h3>
@@ -138,6 +152,12 @@ export default function SuscripcionesPage() {
                 <input value={form.payment_method}
                   onChange={(e) => setForm({ ...form, payment_method: e.target.value })}
                   placeholder="Transferencia, tarjeta..." className={ic} />
+              </div>
+              <div>
+                <label className={lc}>Email de notificación <span className="normal-case tracking-normal text-foreground/30">(avisos de vencimiento)</span></label>
+                <input type="email" value={form.notification_email}
+                  onChange={(e) => setForm({ ...form, notification_email: e.target.value })}
+                  placeholder="correo@ejemplo.com" className={ic} />
               </div>
               <div className="sm:col-span-2 lg:col-span-3">
                 <label className={lc}>Notas</label>

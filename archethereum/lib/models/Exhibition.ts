@@ -5,6 +5,7 @@ export type ExhibitionStatus = 'active' | 'upcoming' | 'past'
 
 export interface IExhibition extends Document {
   title: string
+  slug?: string
   type: ExhibitionType
   curator?: string
   // Legacy single-artist fields (kept for backward compatibility)
@@ -29,9 +30,20 @@ export interface IExhibition extends Document {
   tags: string[]
 }
 
+function generateSlug(text: string): string {
+  return text
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9\s]/g, '')
+    .trim()
+    .replace(/\s+/g, '-')
+}
+
 const ExhibitionSchema = new Schema<IExhibition>(
   {
     title: { type: String, required: true },
+    slug: { type: String, unique: true, sparse: true, index: true },
     type: {
       type: String,
       enum: ['solo', 'collective', 'gallery', 'museum', 'event', 'fair'],
@@ -62,6 +74,19 @@ const ExhibitionSchema = new Schema<IExhibition>(
   },
   { timestamps: true, collection: 'artisthub/exhibitions' }
 )
+
+// Auto-generate slug from title on first save
+ExhibitionSchema.pre('save', async function () {
+  if (!this.slug && this.title) {
+    const base = generateSlug(this.title)
+    let slug = base
+    let i = 1
+    while (await (this.constructor as Model<IExhibition>).exists({ slug })) {
+      slug = `${base}-${i++}`
+    }
+    this.slug = slug
+  }
+})
 
 // Index for fast queries by artist
 ExhibitionSchema.index({ artist_id: 1 })
