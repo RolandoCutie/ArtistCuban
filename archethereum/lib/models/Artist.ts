@@ -148,6 +148,12 @@ const ArtistSchema = new Schema<IArtist>(
   { timestamps: true, collection: 'artisthub/artists' }
 )
 
+// Indexes for common public queries
+ArtistSchema.index({ is_active: 1, createdAt: -1 })
+ArtistSchema.index({ is_active: 1, is_featured: 1, createdAt: -1 })
+ArtistSchema.index({ categories: 1, is_active: 1, created_date: -1 })
+ArtistSchema.index({ name: 'text', alias: 'text', specialty: 'text', categories: 'text' })
+
 ArtistSchema.pre('save', async function () {
   if (!this.slug && this.name) {
     this.slug = generateSlug(this.name)

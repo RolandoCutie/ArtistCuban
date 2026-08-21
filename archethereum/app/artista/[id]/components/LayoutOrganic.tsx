@@ -17,6 +17,7 @@ export default function LayoutOrganic({
   artist,
   artworks,
   services,
+  exhibitions,
   modalArtwork,
   modalIndex,
   openModal,

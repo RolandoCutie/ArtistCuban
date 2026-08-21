@@ -21,6 +21,7 @@ export default function LayoutMinimal({
   artist,
   artworks,
   services,
+  exhibitions,
   modalArtwork,
   modalIndex,
   openModal,

@@ -36,6 +36,7 @@ export default function LayoutLuxury({
   artist,
   artworks,
   services,
+  exhibitions,
   modalArtwork,
   modalIndex,
   openModal,

@@ -1,0 +1,232 @@
+// Spanish (default) translations
+const es = {
+  // Navbar
+  nav: {
+    artists: 'Artistas',
+    gallery: 'Galería Virtual',
+    events: 'Eventos',
+    categories: 'Categorías',
+    changeTheme: 'Cambiar tema',
+    openMenu: 'Abrir menú',
+    closeMenu: 'Cerrar menú',
+    changeLang: 'Change language',
+  },
+
+  // Hero
+  hero: {
+    tagline: 'La plataforma artística de clase mundial',
+    headline1: 'Donde el arte',
+    headline2: 'encuentra su público',
+    scrollDiscover: 'Descubre',
+    searchPlaceholder: 'Buscar artista, disciplina, ciudad…',
+    searching: 'Buscando…',
+    noResults: 'Sin resultados para',
+    viewProfile: 'Ver perfil',
+    viewAll: 'Ver todos',
+  },
+
+  // Home sections
+  home: {
+    philosophyLabel: 'Nuestra filosofía',
+    philosophyQuote: 'No somos un directorio. Somos un espacio sagrado donde cada obra respira, donde cada artista encuentra al coleccionista que comprende su lenguaje.',
+    philosophyCta: 'Conoce a los artistas',
+    featuredLabel: 'Selección curatorial',
+    featuredTitle: 'Artistas',
+    featuredTitleItalic: 'destacados',
+    featuredDesc: 'Una curaduría cuidadosa de los creadores más relevantes del panorama artístico contemporáneo internacional.',
+    categoriesLabel: 'Descubre por disciplina',
+    categoriesTitle: 'Explorar por',
+    categoriesTitleItalic: 'categoría',
+    categoriesDesc: 'Navega por las diferentes disciplinas artísticas y encuentra la expresión que más te inspira.',
+    categoriesView: 'Ver →',
+    eventsLabel: 'Agenda cultural',
+    eventsTitle: 'Próximos',
+    eventsTitleItalic: 'eventos',
+    eventsViewAll: 'Ver todos los eventos',
+    galleryLabel: 'Exposiciones en línea',
+    galleryTitle: 'Galería',
+    galleryTitleItalic: 'Virtual',
+    galleryDesc: 'Exposiciones digitales inmersivas que rompen las barreras geográficas del arte.',
+    galleryViewAll: 'Explorar galería virtual',
+    // Home contact/join section
+    joinLabel: 'Únete como artista',
+    joinTitle: '¿Eres artista?',
+    joinSubtitle: 'Tu obra merece este escenario.',
+    joinDesc: 'Archethereum es la plataforma donde los artistas de clase mundial se encuentran con los coleccionistas, curadores y galerías que comprenden el verdadero valor de su trabajo.',
+    joinCta: 'Solicitar ingreso',
+    galleriesTitle: 'Para galerías y coleccionistas',
+    galleriesDesc: 'Accede a una selección curada de artistas emergentes y consagrados. Conecta directamente y construye relaciones duraderas con los creadores del futuro.',
+    sponsorsTitle: 'Para patrocinadores',
+    sponsorsDesc: 'Asocia tu marca al arte de mayor impacto cultural de nuestra era. Archethereum ofrece oportunidades únicas de patrocinio con visibilidad global.',
+  },
+
+  // Artists listing page
+  artists: {
+    directoryLabel: 'Directorio artístico',
+    title: 'Artistas',
+    searchPlaceholder: 'Buscar artistas...',
+    sortRecent: 'Más recientes',
+    sortNameAsc: 'Nombre A-Z',
+    sortNameDesc: 'Nombre Z-A',
+    filterCategories: 'Categorías',
+    clearFilters: 'Limpiar',
+    noArtistsFound: 'No se encontraron artistas',
+    comingSoon: 'Próximamente habrá artistas aquí',
+    clearFiltersBtn: 'Limpiar filtros',
+    artistSingular: 'artista',
+    artistPlural: 'artistas',
+    in: 'en',
+  },
+
+  // Category page
+  category: {
+    discipline: 'Disciplina artística',
+    backToCategories: 'Todas las categorías',
+    artistsSingular: '1 artista',
+    artistsPlural: '{n} artistas',
+    noArtists: 'Sin artistas por el momento',
+    comingSoon: 'Estamos trabajando para traerte los mejores creadores de {cat}.',
+    viewAllArtists: 'Ver todos los artistas',
+    viewProfile: 'Ver perfil',
+    exploreMore: 'Seguir explorando',
+  },
+
+  // Artist profile
+  profile: {
+    sectionBio: 'Sobre el artista',
+    bioTitle: 'Biografía',
+    artworksLabel: 'Portafolio',
+    artworksTitle: 'Obras',
+    galleryLabel: 'Galería inmersiva',
+    gallerySubtitle: 'Espacio de',
+    exhibitionsLabel: 'Trayectoria expositiva',
+    exhibitionsTitle: 'Exposiciones',
+    servicesLabel: 'Colaboraciones',
+    servicesTitle: 'Trabajar con',
+    contactLabel: 'Contacto directo',
+    contactTitle: 'Conectar con',
+    contactDesc: 'Para adquisición de obras, exposiciones o proyectos de colaboración, contacta directamente con el artista.',
+    featuredBadge: 'Artista destacado',
+    technicalSheet: 'Ficha técnica',
+    birthDate: 'Nacimiento',
+    country: 'País',
+    city: 'Ciudad',
+    specialty: 'Especialidad',
+    style: 'Estilo',
+    languages: 'Idiomas',
+    techniques: 'Técnicas',
+    exhibitionsCount: '{n} registradas',
+    networks: 'Redes',
+    bioSection: 'Biografía',
+    statement: 'Declaración artística',
+    influences: 'Influencias',
+    education: 'Formación académica',
+    awards: 'Premios y reconocimientos',
+    exhibitions: 'Exposiciones',
+    exhibitionInProgress: 'En curso',
+    exhibitionUpcoming: 'Próximamente',
+    exhibitionPast: 'Pasada',
+    seriesLabel: 'Serie',
+    descriptionLabel: 'Descripción',
+    historyLabel: 'Historia',
+    techniqueLabel: 'Técnica',
+    materialLabel: 'Material',
+    yearLabel: 'Año',
+    dimensionsLabel: 'Dimensiones',
+    weightLabel: 'Peso',
+    editionLabel: 'Edición',
+    certificateLabel: 'Certificado',
+    buyBtn: 'Comprar',
+    inquireBtn: 'Consultar',
+    shareBtn: 'Compartir',
+    soldLabel: 'Vendida',
+    availableLabel: 'Disponible',
+    inquireSubject: 'Consulta sobre:',
+    buySubject: 'Compra:',
+    artwork: 'Obra',
+    of: 'de',
+    navigate: '← → para navegar',
+    requestService: 'Solicitar',
+    profileUnavailable: 'Este perfil no está disponible en este momento',
+    profileUnavailableDesc: 'El artista ha desactivado su perfil temporalmente.\nVuelve más tarde o descubre otros artistas.',
+    exploreArtists: 'Explorar artistas →',
+    notFound: 'Artista no encontrado',
+    backHome: '← Volver al inicio',
+  },
+
+  // ArtistCard
+  artistCard: {
+    viewProfile: 'Ver perfil',
+    exhibitions: 'exp.',
+  },
+
+  // Footer
+  footer: {
+    tagline: 'La plataforma artística de clase mundial donde cada obra respira y cada artista encuentra al coleccionista que comprende su lenguaje.',
+    siteMap: 'Mapa del sitio',
+    legal: 'Legal',
+    home: 'Inicio',
+    artists: 'Artistas',
+    gallery: 'Galería Virtual',
+    events: 'Eventos',
+    categories: 'Categorías',
+    privacy: 'Privacidad',
+    terms: 'Términos',
+    cookies: 'Cookies',
+    contact: 'Contacto',
+    rights: 'Todos los derechos reservados.',
+  },
+
+  // Virtual gallery page
+  gallery: {
+    heroTagline: 'Experiencia inmersiva',
+    title: 'Galería',
+    titleItalic: 'Virtual',
+    heroDesc: 'Explora exposiciones de arte contemporáneo en un espacio digital de clase mundial. Sumérgete en la obra de los artistas más destacados.',
+    noExhibitions: 'No hay exposiciones disponibles.',
+    addInDashboard: 'Añade exposiciones en el Dashboard',
+    liveNow: 'En vivo',
+    liveNowFull: 'En vivo ahora',
+    activeSingular: 'activa',
+    activePlural: 'activas',
+    upcoming: 'Próximas exposiciones',
+    past: 'Exposiciones pasadas',
+    curatedBy: 'Curado por',
+    viewAll: 'Ver todas las exposiciones',
+    enterExhibition: 'Entrar a la exposición',
+    expositionLabel: 'Exposición inmersiva',
+  },
+
+  // Exhibition detail page
+  exhibition: {
+    backToGallery: '← Galería Virtual',
+    liveNow: 'En vivo',
+    curatedBy: 'Curado por',
+    artworksSection: 'Obras en la exposición',
+    viewArtist: 'Ver perfil del artista',
+    noArtworks: 'No hay obras en esta exposición',
+    notFound: 'Exposición no encontrada',
+    navigate: '← → para navegar',
+    artwork: 'Obra',
+    of: 'de',
+    schedule: 'Horarios',
+    venue: 'Sede',
+    shareBtn: 'Compartir',
+    themeToggle: 'Fondo oscuro',
+  },
+
+  // Upcoming events component
+  events: {
+    noEvents: 'No hay eventos próximos programados',
+    getTickets: 'Entradas',
+  },
+} as const
+
+export default es
+export type TranslationDict = typeof es
+/** Utility: same key structure as ES but any string values */
+export type AnyTranslationDict = {
+  [K in keyof TranslationDict]: {
+    [SK in keyof TranslationDict[K]]: string
+  }
+}

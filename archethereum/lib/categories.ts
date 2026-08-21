@@ -1,3 +1,19 @@
+/** Genera un slug URL-safe desde el nombre de una categoría */
+export function categorySlug(name: string): string {
+  return name
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9\s]/g, '')
+    .trim()
+    .replace(/\s+/g, '-')
+}
+
+/** Encuentra la categoría cuyo slug coincide */
+export function findCategoryBySlug(slug: string): CategoryItem | undefined {
+  return categories.find((c) => categorySlug(c.name) === slug)
+}
+
 export interface CategoryItem {
   name: string
   image: string

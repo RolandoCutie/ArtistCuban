@@ -1,13 +1,9 @@
+import { getDictionary, isValidLocale } from '@/lib/i18n'
 import Exhibition from '@/lib/models/Exhibition'
 import connectDB from '@/lib/mongodb'
 import { ArrowUpRight } from 'lucide-react'
+import { cookies } from 'next/headers'
 import Link from 'next/link'
-
-const STATUS_LABEL: Record<string, string> = {
-  active: '● En vivo ahora',
-  upcoming: 'Próximamente',
-  past: 'Pasada',
-}
 
 const STATUS_BADGE: Record<string, string> = {
   active: 'text-green-500',
@@ -40,6 +36,17 @@ async function getExhibitions() {
 export default async function VirtualGalleryPage() {
   const exhibitions = await getExhibitions()
 
+  const cookieStore = await cookies()
+  const localeCookie = cookieStore.get('archethereum_locale')?.value
+  const locale = isValidLocale(localeCookie) ? localeCookie : 'es'
+  const t = getDictionary(locale)
+
+  const STATUS_LABEL: Record<string, string> = {
+    active: `● ${t.gallery.liveNowFull}`,
+    upcoming: t.gallery.upcoming,
+    past: t.gallery.past,
+  }
+
   const active = exhibitions.filter((e) => e.status === 'active')
   const upcoming = exhibitions.filter((e) => e.status === 'upcoming')
   const past = exhibitions.filter((e) => e.status === 'past')
@@ -57,13 +64,12 @@ export default async function VirtualGalleryPage() {
         </div>
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 to-black/80" />
         <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center">
-          <p className="mb-4 text-xs uppercase tracking-[0.3em] text-white/50">Experiencia inmersiva</p>
+          <p className="mb-4 text-xs uppercase tracking-[0.3em] text-white/50">{t.gallery.heroTagline}</p>
           <h1 className="font-heading text-5xl font-light leading-none text-white md:text-8xl">
-            Galería <span className="italic">Virtual</span>
+            {t.gallery.title} <span className="italic">{t.gallery.titleItalic}</span>
           </h1>
           <p className="mt-6 max-w-lg text-sm text-white/60">
-            Explora exposiciones de arte contemporáneo en un espacio digital de clase mundial.
-            Sumérgete en la obra de los artistas más destacados.
+            {t.gallery.heroDesc}
           </p>
         </div>
       </section>
@@ -72,8 +78,8 @@ export default async function VirtualGalleryPage() {
       <div className="mx-auto max-w-[1600px] px-6 py-20 lg:px-12 lg:py-32">
         {exhibitions.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 text-foreground/50">
-            <p className="font-heading text-2xl">No hay exposiciones disponibles.</p>
-            <Link href="/dashboard" className="mt-4 text-sm underline">Añade exposiciones en el Dashboard</Link>
+            <p className="font-heading text-2xl">{t.gallery.noExhibitions}</p>
+            <Link href="/dashboard" className="mt-4 text-sm underline">{t.gallery.addInDashboard}</Link>
           </div>
         ) : (
           <div className="space-y-20">
@@ -81,14 +87,14 @@ export default async function VirtualGalleryPage() {
             {active.length > 0 && (
               <div>
                 <div className="mb-8 flex items-center gap-3">
-                  <h2 className="font-heading text-4xl font-light">En vivo</h2>
+                  <h2 className="font-heading text-4xl font-light">{t.gallery.liveNow}</h2>
                   <span className="rounded-full bg-green-500/10 px-3 py-1 text-xs uppercase tracking-widest text-green-500">
-                    ● {active.length} activa{active.length !== 1 ? 's' : ''}
+                    ● {active.length} {active.length !== 1 ? t.gallery.activePlural : t.gallery.activeSingular}
                   </span>
                 </div>
                 <div className="grid gap-6 md:grid-cols-2">
                   {active.map((ex) => (
-                    <ExhibitionCard key={ex._id} exhibition={ex} large />
+                    <ExhibitionCard key={ex._id} exhibition={ex} large statusLabel={STATUS_LABEL} curatedBy={t.gallery.curatedBy} enterLabel={t.gallery.enterExhibition} />
                   ))}
                 </div>
               </div>
@@ -97,10 +103,10 @@ export default async function VirtualGalleryPage() {
             {/* Próximas */}
             {upcoming.length > 0 && (
               <div>
-                <h2 className="mb-8 font-heading text-4xl font-light">Próximas exposiciones</h2>
+                <h2 className="mb-8 font-heading text-4xl font-light">{t.gallery.upcoming}</h2>
                 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                   {upcoming.map((ex) => (
-                    <ExhibitionCard key={ex._id} exhibition={ex} />
+                    <ExhibitionCard key={ex._id} exhibition={ex} statusLabel={STATUS_LABEL} curatedBy={t.gallery.curatedBy} enterLabel={t.gallery.enterExhibition} />
                   ))}
                 </div>
               </div>
@@ -110,11 +116,11 @@ export default async function VirtualGalleryPage() {
             {past.length > 0 && (
               <div>
                 <h2 className="mb-8 font-heading text-4xl font-light text-foreground/50">
-                  Exposiciones pasadas
+                  {t.gallery.past}
                 </h2>
                 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                   {past.map((ex) => (
-                    <ExhibitionCard key={ex._id} exhibition={ex} />
+                    <ExhibitionCard key={ex._id} exhibition={ex} statusLabel={STATUS_LABEL} curatedBy={t.gallery.curatedBy} enterLabel={t.gallery.enterExhibition} />
                   ))}
                 </div>
               </div>
@@ -129,6 +135,9 @@ export default async function VirtualGalleryPage() {
 function ExhibitionCard({
   exhibition,
   large = false,
+  statusLabel = {},
+  curatedBy = 'Curado por',
+  enterLabel = 'Entrar',
 }: {
   exhibition: {
     _id: string
@@ -142,6 +151,9 @@ function ExhibitionCard({
     venue?: string
   }
   large?: boolean
+  statusLabel?: Record<string, string>
+  curatedBy?: string
+  enterLabel?: string
 }) {
   return (
     <Link
@@ -163,9 +175,9 @@ function ExhibitionCard({
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
 
         <div className="absolute bottom-0 left-0 right-0 p-5 lg:p-6">
-          {exhibition.status !== 'past' && (
+          {exhibition.status !== 'past' && statusLabel[exhibition.status] && (
             <p className={`mb-2 text-[10px] uppercase tracking-widest ${STATUS_BADGE[exhibition.status] || 'text-white/50'}`}>
-              {STATUS_LABEL[exhibition.status]}
+              {statusLabel[exhibition.status]}
             </p>
           )}
           <h3 className={`font-heading font-light text-white ${large ? 'text-3xl' : 'text-2xl'}`}>
@@ -173,7 +185,7 @@ function ExhibitionCard({
           </h3>
           {(exhibition.curator || exhibition.artist_name) && (
             <p className="mt-1 text-sm text-white/60">
-              {[exhibition.curator && `Curado por ${exhibition.curator}`, exhibition.artist_name].filter(Boolean).join(' · ')}
+              {[exhibition.curator && `${curatedBy} ${exhibition.curator}`, exhibition.artist_name].filter(Boolean).join(' · ')}
             </p>
           )}
           {exhibition.date && (
@@ -183,7 +195,7 @@ function ExhibitionCard({
             </p>
           )}
           <div className="glass mt-4 inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs uppercase tracking-widest text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-            Entrar <ArrowUpRight size={12} />
+            {enterLabel} <ArrowUpRight size={12} />
           </div>
         </div>
       </div>

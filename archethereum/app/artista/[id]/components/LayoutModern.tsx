@@ -18,6 +18,7 @@ export default function LayoutModern({
   artist,
   artworks,
   services,
+  exhibitions,
   modalArtwork,
   modalIndex,
   openModal,

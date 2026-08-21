@@ -1,3 +1,6 @@
+'use client'
+
+import { useTranslation } from '@/components/LanguageProvider'
 import { ArrowRight, MapPin } from 'lucide-react'
 
 interface EventItem {
@@ -18,28 +21,30 @@ interface UpcomingEventsProps {
 }
 
 export default function UpcomingEvents({ events }: UpcomingEventsProps) {
+  const { t, locale } = useTranslation()
+  const dateLocale = locale === 'en' ? 'en-US' : 'es-ES'
   return (
     <section id="eventos" className="border-t border-border bg-background py-24 lg:py-32">
       <div className="mx-auto max-w-[1600px] px-6 lg:px-12">
         <div className="mb-16">
-          <p className="mb-3 text-xs uppercase tracking-[0.3em] text-foreground/40">Agenda cultural</p>
+          <p className="mb-3 text-xs uppercase tracking-[0.3em] text-foreground/40">{t.home.eventsLabel}</p>
           <h2 className="font-heading text-5xl font-light leading-none md:text-7xl">
-            Próximos <span className="italic">eventos</span>
+            {t.home.eventsTitle} <span className="italic">{t.home.eventsTitleItalic}</span>
           </h2>
         </div>
 
         {events.length === 0 ? (
           <div className="py-20 text-center">
             <p className="text-sm uppercase tracking-[0.2em] text-foreground/30">
-              No hay eventos próximos programados
+              {t.events.noEvents}
             </p>
           </div>
         ) : (
           <div className="space-y-2">
             {events.map((event) => {
               const dateObj = new Date(event.date)
-              const day = dateObj.toLocaleDateString('es-ES', { day: '2-digit' })
-              const month = dateObj.toLocaleDateString('es-ES', { month: 'short' })
+              const day = dateObj.toLocaleDateString(dateLocale, { day: '2-digit' })
+              const month = dateObj.toLocaleDateString(dateLocale, { month: 'short' })
               const year = dateObj.getFullYear()
 
               return (
@@ -88,7 +93,7 @@ export default function UpcomingEvents({ events }: UpcomingEventsProps) {
                         rel="noopener noreferrer"
                         className="flex items-center gap-2 rounded-full border border-border px-4 py-2 text-xs uppercase tracking-widest hover:border-foreground transition-colors"
                       >
-                        Comprar <ArrowRight size={12} />
+                        {t.events.getTickets} <ArrowRight size={12} />
                       </a>
                     ) : (
                       <span className="flex items-center gap-2 rounded-full border border-border px-4 py-2 text-xs uppercase tracking-widest text-foreground/40">

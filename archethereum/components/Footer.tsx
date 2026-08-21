@@ -1,23 +1,27 @@
+'use client'
+
+import { useTranslation } from '@/components/LanguageProvider'
 import { AtSign, Globe, Play } from 'lucide-react'
 import Link from 'next/link'
 
-const siteLinks = [
-  { label: 'Inicio', href: '/' },
-  { label: 'Artistas', href: '/#artistas' },
-  { label: 'Galería Virtual', href: '/galeria-virtual' },
-  { label: 'Eventos', href: '/#eventos' },
-  { label: 'Categorías', href: '/#categorias' },
-]
-
-const legalLinks = [
-  { label: 'Privacidad', href: '#' },
-  { label: 'Términos', href: '#' },
-  { label: 'Cookies', href: '#' },
-  { label: 'Contacto', href: '#' },
-]
-
 export default function Footer() {
+  const { t } = useTranslation()
   const year = new Date().getFullYear()
+
+  const siteLinks = [
+    { label: t.footer.home, href: '/' },
+    { label: t.footer.artists, href: '/#artistas' },
+    { label: t.footer.gallery, href: '/galeria-virtual' },
+    { label: t.footer.events, href: '/#eventos' },
+    { label: t.footer.categories, href: '/#categorias' },
+  ]
+
+  const legalLinks = [
+    { label: t.footer.privacy, href: '#' },
+    { label: t.footer.terms, href: '#' },
+    { label: t.footer.cookies, href: '#' },
+    { label: t.footer.contact, href: '#' },
+  ]
 
   return (
     <footer className="border-t border-border bg-background">
@@ -29,8 +33,7 @@ export default function Footer() {
               Arch<span className="italic">ethereum</span>
             </p>
             <p className="max-w-sm text-sm text-foreground/50 leading-relaxed">
-              La plataforma artística de clase mundial donde cada obra respira y cada artista encuentra
-              al coleccionista que comprende su lenguaje.
+              {t.footer.tagline}
             </p>
             <div className="flex gap-3">
               {[Globe, AtSign, Play].map((Icon, i) => (
@@ -44,9 +47,9 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Mapa del sitio */}
+          {/* Site map */}
           <div className="space-y-4">
-            <p className="text-xs uppercase tracking-[0.3em] text-foreground/40">Mapa del sitio</p>
+            <p className="text-xs uppercase tracking-[0.3em] text-foreground/40">{t.footer.siteMap}</p>
             <ul className="space-y-3">
               {siteLinks.map((link) => (
                 <li key={link.href}>
@@ -63,7 +66,7 @@ export default function Footer() {
 
           {/* Legal */}
           <div className="space-y-4">
-            <p className="text-xs uppercase tracking-[0.3em] text-foreground/40">Legal</p>
+            <p className="text-xs uppercase tracking-[0.3em] text-foreground/40">{t.footer.legal}</p>
             <ul className="space-y-3">
               {legalLinks.map((link) => (
                 <li key={link.label}>
@@ -81,7 +84,7 @@ export default function Footer() {
 
         {/* Bottom */}
         <div className="mt-12 flex flex-col gap-2 border-t border-border pt-8 text-xs text-foreground/40 md:flex-row md:justify-between">
-          <p>© {year} Archethereum. Todos los derechos reservados.</p>
+          <p>© {year} Archethereum. {t.footer.rights}</p>
           <p>
             <span className="italic">Hyper-Curation™</span>
           </p>

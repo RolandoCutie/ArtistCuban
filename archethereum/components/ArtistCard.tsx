@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslation } from '@/components/LanguageProvider'
 import { motion } from 'framer-motion'
 import { ArrowUpRight } from 'lucide-react'
 import Link from 'next/link'
@@ -30,7 +31,7 @@ interface ArtistCardProps {
 }
 
 export default function ArtistCard({ artist, index = 0 }: ArtistCardProps) {
-  // Usa el slug almacenado; si no existe, genera uno desde el nombre para la URL
+  const { t } = useTranslation()
   const artistUrl = `/artista/${artist.slug || slugify(artist.name)}`
 
   return (
@@ -60,7 +61,7 @@ export default function ArtistCard({ artist, index = 0 }: ArtistCardProps) {
           {/* Badge hover */}
           <div className="absolute bottom-4 left-4 right-4 translate-y-4 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
             <div className="glass flex items-center justify-between rounded-full px-5 py-3">
-              <span className="text-xs uppercase tracking-widest text-white">Ver perfil</span>
+              <span className="text-xs uppercase tracking-widest text-white">{t.artistCard.viewProfile}</span>
               <ArrowUpRight size={16} className="text-white" />
             </div>
           </div>
@@ -75,7 +76,7 @@ export default function ArtistCard({ artist, index = 0 }: ArtistCardProps) {
           </div>
           {typeof artist.exhibitions_count === 'number' && artist.exhibitions_count > 0 && (
             <span className="shrink-0 text-xs uppercase tracking-widest text-foreground/30">
-              {artist.exhibitions_count} exp.
+              {artist.exhibitions_count} {t.artistCard.exhibitions}
             </span>
           )}
         </div>

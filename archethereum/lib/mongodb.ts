@@ -33,6 +33,9 @@ async function connectDB(): Promise<typeof mongoose> {
     }
     cached.promise = mongoose.connect(MONGODB_URI, {
       bufferCommands: false,
+      serverSelectionTimeoutMS: 5000,  // fail fast if Atlas unreachable
+      connectTimeoutMS: 5000,
+      socketTimeoutMS: 10000,
     })
   }
 

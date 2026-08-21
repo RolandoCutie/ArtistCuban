@@ -1,4 +1,7 @@
+'use client'
+
 import ArtistCard from '@/components/ArtistCard'
+import { useTranslation } from '@/components/LanguageProvider'
 
 interface FeaturedArtistsProps {
   artists: {
@@ -14,21 +17,21 @@ interface FeaturedArtistsProps {
 }
 
 export default function FeaturedArtists({ artists }: FeaturedArtistsProps) {
+  const { t } = useTranslation()
   return (
     <section id="artistas" className="bg-background py-24 lg:py-32">
       <div className="mx-auto max-w-[1600px] px-6 lg:px-12">
         <div className="mb-16 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="mb-3 text-xs uppercase tracking-[0.3em] text-foreground/40">
-              Selección curatorial
+              {t.home.featuredLabel}
             </p>
             <h2 className="font-heading text-5xl font-light leading-none md:text-7xl">
-              Artistas <span className="italic">destacados</span>
+              {t.home.featuredTitle} <span className="italic">{t.home.featuredTitleItalic}</span>
             </h2>
           </div>
           <p className="max-w-md text-sm text-foreground/50">
-            Una curaduría cuidadosa de los creadores más relevantes del panorama artístico contemporáneo
-            internacional.
+            {t.home.featuredDesc}
           </p>
         </div>
 

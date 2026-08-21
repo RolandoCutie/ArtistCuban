@@ -1,5 +1,7 @@
 'use client'
 
+import { useTranslation } from '@/components/LanguageProvider'
+import { slugify } from '@/lib/slug'
 import { AnimatePresence, motion } from 'framer-motion'
 import {
     ChevronLeft, ChevronRight,
@@ -13,7 +15,6 @@ import {
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
-import { slugify } from '@/lib/slug'
 
 interface Artwork {
   _id: string
@@ -52,6 +53,8 @@ interface Exhibition {
 
 export default function ExhibitionDetailPage() {
   const { id } = useParams<{ id: string }>()
+  const { t, locale } = useTranslation()
+  const dateLocale = locale === 'en' ? 'en-US' : 'es-ES'
   const [exhibition, setExhibition] = useState<Exhibition | null>(null)
   const [artworks, setArtworks] = useState<Artwork[]>([])
   const [loading, setLoading] = useState(true)
@@ -120,8 +123,8 @@ export default function ExhibitionDetailPage() {
   if (!exhibition || (exhibition as { error?: string }).error) {
     return (
       <div className="flex h-screen flex-col items-center justify-center gap-4">
-        <p className="text-foreground/50">Exposición no encontrada</p>
-        <Link href="/galeria-virtual" className="text-sm underline">← Galería Virtual</Link>
+        <p className="text-foreground/50">{t.exhibition.notFound}</p>
+        <Link href="/galeria-virtual" className="text-sm underline">{t.exhibition.backToGallery}</Link>
       </div>
     )
   }
@@ -145,7 +148,7 @@ export default function ExhibitionDetailPage() {
           href="/galeria-virtual"
           className="absolute left-6 top-24 z-10 flex items-center gap-1 text-sm text-white/80 hover:text-white transition-colors lg:left-12 drop-shadow-[0_1px_4px_rgba(0,0,0,0.5)]"
         >
-          ← Galería Virtual
+          {t.exhibition.backToGallery}
         </Link>
 
         <motion.div
@@ -157,14 +160,14 @@ export default function ExhibitionDetailPage() {
           {exhibition.status === 'active' && (
             <div className="glass mb-4 inline-flex items-center gap-2 rounded-full px-4 py-2">
               <span className="h-2 w-2 rounded-full bg-green-400 animate-pulse" />
-              <span className="text-[10px] uppercase tracking-widest text-white">En vivo</span>
+              <span className="text-[10px] uppercase tracking-widest text-white">{t.exhibition.liveNow}</span>
             </div>
           )}
 
           {exhibition.date && (
             <p className="mb-2 text-xs uppercase tracking-widest text-white/70 drop-shadow-[0_1px_4px_rgba(0,0,0,0.6)]">
-              {new Date(exhibition.date).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}
-              {exhibition.end_date && ` — ${new Date(exhibition.end_date).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}`}
+              {new Date(exhibition.date).toLocaleDateString(dateLocale, { year: 'numeric', month: 'long', day: 'numeric' })}
+              {exhibition.end_date && ` — ${new Date(exhibition.end_date).toLocaleDateString(dateLocale, { year: 'numeric', month: 'long', day: 'numeric' })}`}
             </p>
           )}
 
@@ -174,7 +177,7 @@ export default function ExhibitionDetailPage() {
 
           {(exhibition.curator || exhibition.artist_name) && (
             <p className="mt-3 text-sm text-white/80 drop-shadow-[0_1px_6px_rgba(0,0,0,0.6)]">
-              {[exhibition.curator && `Curado por ${exhibition.curator}`, exhibition.artist_name].filter(Boolean).join(' · ')}
+              {[exhibition.curator && `${t.exhibition.curatedBy} ${exhibition.curator}`, exhibition.artist_name].filter(Boolean).join(' · ')}
             </p>
           )}
 
@@ -197,13 +200,13 @@ export default function ExhibitionDetailPage() {
               <div className="mt-12 flex flex-col items-center gap-3 border-t border-border pt-8">
                 {exhibition.venue && (
                   <div>
-                    <p className="text-xs uppercase tracking-widest text-foreground/40">Sede</p>
+                    <p className="text-xs uppercase tracking-widest text-foreground/40">{t.exhibition.venue}</p>
                     <p className="mt-1 text-sm">{exhibition.venue}</p>
                   </div>
                 )}
                 {exhibition.schedule && (
                   <div>
-                    <p className="text-xs uppercase tracking-widest text-foreground/40">Horario</p>
+                    <p className="text-xs uppercase tracking-widest text-foreground/40">{t.exhibition.schedule}</p>
                     <p className="mt-1 text-sm">{exhibition.schedule}</p>
                   </div>
                 )}
@@ -229,7 +232,7 @@ export default function ExhibitionDetailPage() {
                 className="flex items-center gap-2 rounded-full border border-border px-4 py-2 text-xs uppercase tracking-widest hover:border-foreground transition-colors"
               >
                 {galleryDark ? <Sun size={14} /> : <Moon size={14} />}
-                {galleryDark ? 'Modo claro' : 'Modo oscuro'}
+                {galleryDark ? t.gallery.liveNow : t.exhibition.themeToggle}
               </button>
             </div>
 
@@ -272,7 +275,7 @@ export default function ExhibitionDetailPage() {
                         </p>
                       )}
                       <p className={`mt-2 text-xs uppercase tracking-widest ${galleryDark ? 'text-background/30' : 'text-foreground/30'}`}>
-                        Click para ampliar
+                        {t.profile.artwork}
                       </p>
                     </div>
                   </div>

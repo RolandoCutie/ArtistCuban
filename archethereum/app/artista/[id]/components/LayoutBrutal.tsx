@@ -56,6 +56,7 @@ export default function LayoutBrutal({
   artist,
   artworks,
   services,
+  exhibitions,
   modalArtwork,
   modalIndex,
   openModal,

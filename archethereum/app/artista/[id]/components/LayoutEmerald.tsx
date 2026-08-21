@@ -18,6 +18,7 @@ export default function LayoutEmerald({
   artist,
   artworks,
   services,
+  exhibitions,
   modalArtwork,
   modalIndex,
   openModal,

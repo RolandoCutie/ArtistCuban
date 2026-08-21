@@ -1,22 +1,24 @@
 'use client'
 
-import { categories } from '@/lib/categories'
+import { useTranslation } from '@/components/LanguageProvider'
+import { categories, categorySlug } from '@/lib/categories'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 
 export default function CategoryExplorer() {
+  const { t } = useTranslation()
   return (
     <section id="categorias" className="border-t border-border bg-background py-24 lg:py-32">
       <div className="mx-auto max-w-[1600px] px-6 lg:px-12">
         <div className="mb-16 max-w-2xl">
           <p className="mb-3 text-xs uppercase tracking-[0.3em] text-foreground/40">
-            Descubre por disciplina
+            {t.home.categoriesLabel}
           </p>
           <h2 className="font-heading text-5xl font-light leading-none md:text-7xl">
-            Explorar por <span className="italic">categoría</span>
+            {t.home.categoriesTitle} <span className="italic">{t.home.categoriesTitleItalic}</span>
           </h2>
           <p className="mt-6 text-lg text-foreground/50">
-            Navega por las diferentes disciplinas artísticas y encuentra la expresión que más te inspira.
+            {t.home.categoriesDesc}
           </p>
         </div>
 
@@ -30,7 +32,7 @@ export default function CategoryExplorer() {
               transition={{ duration: 0.5, delay: i * 0.05 }}
             >
               <Link
-                href={`/?categoria=${encodeURIComponent(cat.name)}`}
+                href={`/artistas/categoria/${categorySlug(cat.name)}`}
                 className="group relative flex items-center gap-5 overflow-hidden rounded-lg border border-border p-4 transition-colors hover:border-foreground"
               >
                 <div className="h-20 w-20 shrink-0 overflow-hidden rounded-md bg-muted">
@@ -46,7 +48,7 @@ export default function CategoryExplorer() {
                   <p className="truncate text-sm text-foreground/50">{cat.description}</p>
                 </div>
                 <span className="shrink-0 text-xs uppercase tracking-widest text-foreground/30 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                  Ver →
+                  {t.home.categoriesView}
                 </span>
               </Link>
             </motion.div>

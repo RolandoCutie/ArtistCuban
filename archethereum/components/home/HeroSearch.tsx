@@ -1,10 +1,11 @@
 'use client'
 
+import { useTranslation } from '@/components/LanguageProvider'
+import { slugify } from '@/lib/slug'
 import { AnimatePresence, motion } from 'framer-motion'
 import { MapPin, Search, X } from 'lucide-react'
 import Link from 'next/link'
 import { useMemo, useState } from 'react'
-import { slugify } from '@/lib/slug'
 
 interface Artist {
   _id: string
@@ -23,6 +24,7 @@ interface HeroSearchProps {
 }
 
 export default function HeroSearch({ artists }: HeroSearchProps) {
+  const { t } = useTranslation()
   const [query, setQuery] = useState('')
   const [activeCategory, setActiveCategory] = useState<string | null>(null)
 
@@ -73,7 +75,7 @@ export default function HeroSearch({ artists }: HeroSearchProps) {
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Busca un artista..."
+          placeholder={t.hero.searchPlaceholder}
           className="flex-1 bg-transparent font-heading text-2xl font-light text-white placeholder:text-white/40 focus:outline-none md:text-3xl"
         />
         {(query || activeCategory) && (
@@ -118,7 +120,7 @@ export default function HeroSearch({ artists }: HeroSearchProps) {
             {results.length === 0 ? (
               <p className="p-8 text-center text-sm text-white/50">
                 No encontramos artistas
-                {query ? ` para "${query}"` : ''}
+                {query ? ` ${t.hero.noResults} "${query}"` : ''}
                 {activeCategory ? ` en ${activeCategory}` : ''}
               </p>
             ) : (

@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslation } from '@/components/LanguageProvider'
 import { motion } from 'framer-motion'
 import HeroSearch from './HeroSearch'
 
@@ -17,6 +18,7 @@ interface HeroProps {
 }
 
 export default function Hero({ artists }: HeroProps) {
+  const { t } = useTranslation()
   return (
     <section className="relative h-screen min-h-[700px] w-full overflow-hidden bg-foreground">
       {/* Background con Ken Burns */}
@@ -46,7 +48,7 @@ export default function Hero({ artists }: HeroProps) {
           transition={{ duration: 0.8, delay: 0.3 }}
           className="mb-6 text-xs uppercase tracking-[0.3em] text-white/50"
         >
-          La plataforma artística de clase mundial
+          {t.hero.tagline}
         </motion.p>
 
         {/* Título */}
@@ -56,9 +58,9 @@ export default function Hero({ artists }: HeroProps) {
           transition={{ duration: 1, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
           className="font-heading text-5xl font-light leading-[0.95] text-white text-balance md:text-7xl lg:text-8xl"
         >
-          Donde el arte
+          {t.hero.headline1}
           <br />
-          <span className="italic">encuentra su público</span>
+          <span className="italic">{t.hero.headline2}</span>
         </motion.h1>
 
         {/* Buscador */}
@@ -74,7 +76,7 @@ export default function Hero({ artists }: HeroProps) {
 
       {/* Scroll indicator */}
       <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3">
-        <span className="text-[10px] uppercase tracking-[0.3em] text-white/40">Descubre</span>
+        <span className="text-[10px] uppercase tracking-[0.3em] text-white/40">{t.hero.scrollDiscover}</span>
         <motion.div
           className="h-10 w-px bg-white/30"
           animate={{ y: [0, 8, 0] }}

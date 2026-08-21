@@ -20,6 +20,7 @@ export default function LayoutGlass({
   artist,
   artworks,
   services,
+  exhibitions,
   modalArtwork,
   modalIndex,
   openModal,

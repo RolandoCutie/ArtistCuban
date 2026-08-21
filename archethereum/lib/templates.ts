@@ -3,6 +3,12 @@ export interface TemplateConfig {
   name: string
   description: string
   preview_bg: string
+  /** Hex color for the mock text bars in admin preview */
+  preview_text?: string
+  /** Hex for the accent line in admin preview */
+  preview_accent?: string
+  /** Layout style label shown in admin */
+  layoutStyle?: string
   cssVars: Record<string, string>
   fontHeading: string
   fontBody: string
@@ -12,9 +18,12 @@ export interface TemplateConfig {
 export const TEMPLATES: TemplateConfig[] = [
   {
     id: 'template1',
-    name: 'Clásica',
-    description: 'La plantilla original. Fondo crema, tipografía elegante, estilo galería contemporánea.',
+    name: 'Editorial Clásica',
+    description: 'Galería contemporánea. Fondo crema, tipografía Cormorant, masonry gallery. Elástico y elegante.',
     preview_bg: 'bg-[hsl(40,20%,97%)]',
+    preview_text: '#3a3228',
+    preview_accent: '#8c7b6b',
+    layoutStyle: 'Editorial',
     cssVars: {},
     fontHeading: "'Cormorant Garamond', Georgia, serif",
     fontBody: "'Inter', ui-sans-serif, system-ui, sans-serif",
@@ -23,8 +32,11 @@ export const TEMPLATES: TemplateConfig[] = [
   {
     id: 'template2',
     name: 'Blanca Dorada',
-    description: 'Minimalista clara. Mucho blanco, tipografía elegante, detalles dorados.',
+    description: 'Minimalista clara. Mucho blanco, tipografía elegante, detalles dorados. Sensación de galería de lujo.',
     preview_bg: 'bg-white',
+    preview_text: '#0d0d0d',
+    preview_accent: '#c4a35a',
+    layoutStyle: 'Lujo Editorial',
     cssVars: {
       '--background': '0 0% 100%',
       '--foreground': '0 0% 5%',
@@ -46,8 +58,11 @@ export const TEMPLATES: TemplateConfig[] = [
   {
     id: 'template3',
     name: 'Noche Cobre',
-    description: 'Minimalista oscura. Fondos negros, tipografía blanca, acentos cobre. Ideal para fotografía.',
+    description: 'Cinematográfico dramático. Hero fullscreen oscuro, nombre masivo, Ken Burns effect. Ideal para fotografía y performance.',
     preview_bg: 'bg-neutral-950',
+    preview_text: '#ede8e0',
+    preview_accent: '#b06030',
+    layoutStyle: 'Cinematográfico',
     cssVars: {
       '--background': '0 0% 4%',
       '--foreground': '30 10% 92%',
@@ -69,8 +84,11 @@ export const TEMPLATES: TemplateConfig[] = [
   {
     id: 'template4',
     name: 'Museo Crema',
-    description: 'Inspiración museo. Fondos crema, detalles finos, mucho espacio. Sensación de galería de arte.',
+    description: 'Institución museo. Fondo crema, placas de pared, tipografía serif clásica. Sensación de galería de arte institucional.',
     preview_bg: 'bg-[#f5f0e8]',
+    preview_text: '#261f14',
+    preview_accent: '#9c8c6c',
+    layoutStyle: 'Museo Editorial',
     cssVars: {
       '--background': '38 35% 95%',
       '--foreground': '25 15% 15%',
@@ -92,9 +110,12 @@ export const TEMPLATES: TemplateConfig[] = [
   },
   {
     id: 'template5',
-    name: 'Creativa',
-    description: 'Fondos con degradados sutiles, tarjetas modernas, sombras elegantes, animaciones discretas.',
+    name: 'Creativa Moderna',
+    description: 'Portfolio split moderno. Hero dividido imagen/texto, bento grid asimétrico, magnetic buttons. Para artistas contemporáneos.',
     preview_bg: 'bg-gradient-to-br from-slate-50 to-slate-100',
+    preview_text: '#1a1d2e',
+    preview_accent: '#7c5ce4',
+    layoutStyle: 'Modern Creative',
     cssVars: {
       '--background': '220 20% 97%',
       '--foreground': '220 25% 10%',
@@ -117,8 +138,11 @@ export const TEMPLATES: TemplateConfig[] = [
   {
     id: 'template6',
     name: 'Premium Oscuro',
-    description: 'Diseño sofisticado. Acentos oscuros, tipografía moderna, glassmorphism, transiciones suaves.',
+    description: 'Glassmorphism oscuro con orbes de luz. Capas translúcidas, blur effects, sensación de lujo nocturno.',
     preview_bg: 'bg-neutral-900',
+    preview_text: '#e2e8ef',
+    preview_accent: '#4a90d9',
+    layoutStyle: 'Glassmorphism',
     cssVars: {
       '--background': '220 15% 8%',
       '--foreground': '220 10% 90%',
@@ -140,9 +164,12 @@ export const TEMPLATES: TemplateConfig[] = [
   },
   {
     id: 'template7',
-    name: 'Minimalista',
-    description: 'Blanco puro, máximo espacio en blanco, tipografía sin serifa. La obra como protagonista.',
+    name: 'Minimal Luxury',
+    description: 'Índice tipográfico puro. Blanco absoluto, números de obra grandes, máximo espacio. Para artistas que dejan hablar la obra.',
     preview_bg: 'bg-white',
+    preview_text: '#141414',
+    preview_accent: '#141414',
+    layoutStyle: 'Minimal Luxury',
     cssVars: {
       '--background': '0 0% 100%',
       '--foreground': '0 0% 8%',
@@ -165,8 +192,11 @@ export const TEMPLATES: TemplateConfig[] = [
   {
     id: 'template8',
     name: 'Esmeralda',
-    description: 'Lujo oscuro con acentos verde esmeralda. Elegancia contemporánea para coleccionistas.',
+    description: 'Inmersión verde oscuro de lujo. Hero fullscreen, acentos esmeralda, galería premium para coleccionistas.',
     preview_bg: 'bg-[#0f1a14]',
+    preview_text: '#d4ead8',
+    preview_accent: '#3a9c50',
+    layoutStyle: 'Immersive',
     cssVars: {
       '--background': '150 25% 6%',
       '--foreground': '150 10% 92%',
@@ -188,9 +218,12 @@ export const TEMPLATES: TemplateConfig[] = [
   },
   {
     id: 'template9',
-    name: 'Terracota',
-    description: 'Calidez mediterránea. Tonos tierra, crema y terracota. Ideal para artistas plásticos.',
+    name: 'Terracota Orgánica',
+    description: 'Calidez mediterránea. Hero centrado con blobs animados, retrato circular, chips de color orgánico. Para artistas plásticos y ceramistas.',
     preview_bg: 'bg-[#f2e8df]',
+    preview_text: '#3d2510',
+    preview_accent: '#c25a2a',
+    layoutStyle: 'Orgánico',
     cssVars: {
       '--background': '25 40% 94%',
       '--foreground': '20 30% 15%',
@@ -212,9 +245,12 @@ export const TEMPLATES: TemplateConfig[] = [
   },
   {
     id: 'template10',
-    name: 'Brutalista',
-    description: 'Estética radical y cruda. Papel claro, contornos gruesos, tipografía en mayúsculas, acentos vibrantes. Ideal para arte urbano, contemporáneo y performance.',
+    name: 'Brutalista Bold',
+    description: 'Estética radical y cruda. Contornos gruesos, tipografía en mayúsculas, acentos vibrantes. Para arte urbano, graffiti y performance.',
     preview_bg: 'bg-[#faf7ef]',
+    preview_text: '#141414',
+    preview_accent: '#f5c400',
+    layoutStyle: 'Bold Creative',
     cssVars: {
       '--background': '45 33% 96%',
       '--foreground': '0 0% 8%',

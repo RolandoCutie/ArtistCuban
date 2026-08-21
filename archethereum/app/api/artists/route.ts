@@ -29,7 +29,24 @@ export async function GET(req: NextRequest) {
       }
     }
 
-    const artists = await Artist.find(query).sort({ created_date: -1 }).lean()
+    // admin gets all fields; public gets only the fields needed for listing
+    const projection = admin
+      ? {}
+      : { name: 1, alias: 1, slug: 1, specialty: 1, categories: 1, city: 1, country: 1, photo_url: 1, is_featured: 1, exhibitions_count: 1, template: 1 }
+
+    const category = searchParams.get('category')
+    if (category) {
+      query.categories = { $regex: new RegExp(`^${category}$`, 'i') }
+    }
+
+    const limitParam = searchParams.get('limit')
+    const pageParam = searchParams.get('page')
+    const limit = limitParam ? Math.min(parseInt(limitParam), 100) : 0
+    const page = pageParam ? Math.max(parseInt(pageParam) - 1, 0) : 0
+
+    let q = Artist.find(query, projection).sort({ created_date: -1 })
+    if (limit) q = q.skip(page * limit).limit(limit)
+    const artists = await q.lean()
     return NextResponse.json(artists)
   } catch {
     return NextResponse.json({ error: 'Error al obtener artistas' }, { status: 500 })

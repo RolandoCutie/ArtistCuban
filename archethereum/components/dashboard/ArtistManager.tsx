@@ -395,48 +395,75 @@ export default function ArtistManager() {
 
           {/* Plantilla */}
           <div>
-            <div className="mb-4 flex items-center justify-between">
-              <h3 className="font-heading text-xl">Plantilla del perfil</h3>
+            <div className="mb-5 flex items-center justify-between">
+              <div>
+                <h3 className="font-heading text-xl">Plantilla del perfil</h3>
+                <p className="mt-1 text-xs text-foreground/40">
+                  Selecciona el estilo visual del perfil público. Guarda y usa &quot;Ver perfil&quot; para previsualizar.
+                </p>
+              </div>
               {editing && (
                 <Link
                   href={`/artista/${editing.slug || slugify(editing.name)}`}
                   target="_blank"
-                  className="flex items-center gap-1.5 rounded-full border border-border px-4 py-1.5 text-xs hover:border-foreground transition-colors"
+                  className="flex shrink-0 items-center gap-1.5 rounded-full border border-border bg-background px-4 py-2 text-xs font-medium transition-all hover:border-foreground hover:shadow-sm"
                 >
-                  <ExternalLink size={12} /> Vista previa
+                  <ExternalLink size={12} /> Ver perfil
                 </Link>
               )}
             </div>
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
               {TEMPLATES.map((t) => (
                 <button
                   key={t.id}
                   type="button"
                   onClick={() => setSelectedTemplate(t.id)}
-                  className={`rounded-lg border p-3 text-left transition-all ${
-                    selectedTemplate === t.id ? 'border-foreground ring-1 ring-foreground' : 'border-border hover:border-foreground/40'
+                  className={`group rounded-xl border-2 text-left transition-all duration-200 overflow-hidden ${
+                    selectedTemplate === t.id
+                      ? 'border-foreground shadow-lg shadow-foreground/10 scale-[1.02]'
+                      : 'border-border hover:border-foreground/50 hover:shadow-md'
                   }`}
                 >
-                  <div className={`mb-2 h-14 w-full rounded overflow-hidden ${t.preview_bg} border border-border/30 relative`}>
-                    {/* Mini preview bars to give visual character */}
-                    <div className="absolute bottom-2 left-2 right-2 space-y-1">
-                      <div className="h-1.5 rounded-full opacity-30" style={{ background: 'currentColor', width: '60%' }} />
-                      <div className="h-1 rounded-full opacity-20" style={{ background: 'currentColor', width: '40%' }} />
+                  {/* Visual mock-up preview */}
+                  <div className={`relative h-28 w-full overflow-hidden ${t.preview_bg}`}>
+                    {/* Mock header bar */}
+                    <div className="absolute left-0 right-0 top-0 flex items-center justify-between px-3 pt-2.5">
+                      <div className="h-1 w-6 rounded-full opacity-30" style={{ background: t.preview_text ?? '#888' }} />
+                      <div className="flex gap-1">
+                        <div className="h-1 w-1 rounded-full opacity-20" style={{ background: t.preview_text ?? '#888' }} />
+                        <div className="h-1 w-1 rounded-full opacity-20" style={{ background: t.preview_text ?? '#888' }} />
+                        <div className="h-1 w-1 rounded-full opacity-20" style={{ background: t.preview_text ?? '#888' }} />
+                      </div>
                     </div>
+                    {/* Mock hero name */}
+                    <div className="absolute bottom-8 left-3 right-3">
+                      <div className="mb-1 h-3 w-24 rounded opacity-70" style={{ background: t.preview_text ?? '#888' }} />
+                      <div className="h-2 w-14 rounded opacity-30" style={{ background: t.preview_text ?? '#888' }} />
+                    </div>
+                    {/* Accent line */}
+                    <div className="absolute bottom-0 left-0 h-1.5 w-full opacity-80" style={{ background: t.preview_accent ?? '#888' }} />
+                    {/* Selected checkmark */}
                     {selectedTemplate === t.id && (
-                      <div className="absolute right-1.5 top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-foreground text-background text-[8px] font-bold">✓</div>
+                      <div className="absolute right-2 top-2 flex h-5 w-5 items-center justify-center rounded-full bg-foreground text-background text-[9px] font-bold shadow-md">✓</div>
                     )}
                   </div>
-                  <p className="text-xs font-medium leading-tight">{t.name}</p>
-                  <p className="mt-0.5 text-[10px] text-foreground/40 leading-tight">{t.description.split('.')[0]}</p>
+                  {/* Info */}
+                  <div className="p-3">
+                    <div className="flex items-start justify-between gap-1">
+                      <p className="text-xs font-semibold leading-tight">{t.name}</p>
+                      {t.layoutStyle && (
+                        <span className="shrink-0 rounded-full border border-border px-1.5 py-0.5 text-[8px] uppercase tracking-wide text-foreground/40">
+                          {t.layoutStyle}
+                        </span>
+                      )}
+                    </div>
+                    <p className="mt-1 line-clamp-2 text-[10px] leading-relaxed text-foreground/40">
+                      {t.description}
+                    </p>
+                  </div>
                 </button>
               ))}
             </div>
-            {editing && (
-              <p className="mt-3 text-xs text-foreground/40">
-                💡 Guarda los cambios y usa &quot;Vista previa&quot; para ver el perfil del artista en tiempo real en una nueva pestaña.
-              </p>
-            )}
           </div>
 
           {/* Secciones del perfil */}

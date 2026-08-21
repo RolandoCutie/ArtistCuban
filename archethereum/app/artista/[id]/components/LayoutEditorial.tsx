@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslation } from '@/components/LanguageProvider'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import {
     ArrowUpRight,
@@ -18,12 +19,14 @@ export default function LayoutEditorial({
   artist,
   artworks,
   services,
+  exhibitions,
   modalArtwork,
   modalIndex,
   openModal,
   navigateArtwork,
   closeModal,
 }: LayoutProps) {
+  const { t } = useTranslation()
   const heroRef = useRef<HTMLElement>(null)
   const { scrollYProgress } = useScroll({
     target: heroRef,
@@ -165,7 +168,7 @@ export default function LayoutEditorial({
             )}
             {artist.exhibitions_count != null && (
               <p className="text-xs uppercase tracking-widest text-white/50">
-                {artist.exhibitions_count} exposiciones
+                {artist.exhibitions_count} {t.profile.exhibitionsLabel}
               </p>
             )}
           </motion.div>
@@ -263,15 +266,15 @@ export default function LayoutEditorial({
                 02
               </p>
               <p className="mt-1 text-[10px] uppercase tracking-[0.4em] text-foreground/35">
-                Sobre el artista
+                {t.profile.sectionBio}
               </p>
-              <h2 className="mt-2 font-heading text-5xl font-light md:text-7xl">Biografía</h2>
+              <h2 className="mt-2 font-heading text-5xl font-light md:text-7xl">{t.profile.bioTitle}</h2>
             </div>
             {artist.is_featured && (
               <div className="hidden items-center gap-2 rounded-full border border-foreground/15 px-5 py-2 lg:flex">
                 <div className="h-1.5 w-1.5 rounded-full bg-foreground/30" />
                 <span className="text-[10px] uppercase tracking-[0.35em] text-foreground/35">
-                  Artista destacado
+                  {t.profile.featuredBadge}
                 </span>
               </div>
             )}
@@ -281,21 +284,20 @@ export default function LayoutEditorial({
             {/* Sidebar */}
             <div>
               <p className="mb-5 text-[10px] uppercase tracking-[0.45em] text-foreground/25">
-                Ficha técnica
+                {t.profile.technicalSheet}
               </p>
               {[
-                { label: 'Nacimiento', value: artist.birth_date },
-                { label: 'País', value: artist.country },
-                { label: 'Ciudad', value: artist.city },
-                { label: 'Especialidad', value: artist.specialty },
-                { label: 'Estilo', value: artist.style },
-                { label: 'Idiomas', value: artist.languages?.join(', ') },
-                { label: 'Técnicas', value: artist.techniques?.join(' · ') },
+                { label: t.profile.birthDate, value: artist.birth_date },
+                { label: t.profile.country, value: artist.country },
+                { label: t.profile.city, value: artist.city },
+                { label: t.profile.specialty, value: artist.specialty },
+                { label: t.profile.style, value: artist.style },
+                { label: t.profile.languages, value: artist.languages?.join(', ') },
+                { label: t.profile.techniques, value: artist.techniques?.join(' · ') },
                 {
-                  label: 'Exposiciones',
-                  value:
-                    artist.exhibitions_count != null
-                      ? `${artist.exhibitions_count} registradas`
+                  label: t.profile.exhibitions,
+                  value: artist.exhibitions_count != null
+                      ? t.profile.exhibitionsCount.replace('{n}', String(artist.exhibitions_count))
                       : undefined,
                 },
               ]
@@ -317,7 +319,7 @@ export default function LayoutEditorial({
               {/* Social links */}
               {artist.social_links && Object.values(artist.social_links).some(Boolean) && (
                 <div className="pt-8">
-                  <p className="mb-4 text-[10px] uppercase tracking-[0.4em] text-foreground/25">Redes</p>
+                  <p className="mb-4 text-[10px] uppercase tracking-[0.4em] text-foreground/25">{t.profile.networks}</p>
                   <div className="flex flex-wrap gap-2">
                     {[
                       { href: artist.social_links.website, label: 'Web' },
@@ -349,7 +351,7 @@ export default function LayoutEditorial({
               {artist.bio && (
                 <div>
                   <p className="mb-5 text-[10px] uppercase tracking-[0.4em] text-foreground/25">
-                    Biografía
+                    {t.profile.bioSection}
                   </p>
                   <p className="text-lg leading-loose text-foreground/65 lg:text-xl">{artist.bio}</p>
                 </div>
@@ -358,7 +360,7 @@ export default function LayoutEditorial({
               {artist.statement && (
                 <div className="border-l-2 border-foreground/15 pl-8">
                   <p className="mb-3 text-[10px] uppercase tracking-[0.4em] text-foreground/25">
-                    Declaración artística
+                    {t.profile.statement}
                   </p>
                   <p className="font-heading text-2xl italic leading-relaxed text-foreground/55">
                     &ldquo;{artist.statement}&rdquo;
@@ -369,7 +371,7 @@ export default function LayoutEditorial({
               {artist.influences && artist.influences.length > 0 && (
                 <div>
                   <p className="mb-5 text-[10px] uppercase tracking-[0.4em] text-foreground/25">
-                    Influencias
+                    {t.profile.influences}
                   </p>
                   <div className="flex flex-wrap gap-2">
                     {artist.influences.map((inf) => (
@@ -387,7 +389,7 @@ export default function LayoutEditorial({
               {artist.education && artist.education.length > 0 && (
                 <div>
                   <p className="mb-5 text-[10px] uppercase tracking-[0.4em] text-foreground/25">
-                    Formación académica
+                    {t.profile.education}
                   </p>
                   <ul className="space-y-3">
                     {artist.education.map((ed) => (
@@ -403,7 +405,7 @@ export default function LayoutEditorial({
               {artist.awards && artist.awards.length > 0 && (
                 <div>
                   <p className="mb-5 text-[10px] uppercase tracking-[0.4em] text-foreground/25">
-                    Premios y reconocimientos
+                    {t.profile.awards}
                   </p>
                   <ul className="space-y-3">
                     {artist.awards.map((aw) => (
@@ -430,9 +432,9 @@ export default function LayoutEditorial({
                   03
                 </p>
                 <p className="mt-1 text-[10px] uppercase tracking-[0.4em] text-foreground/35">
-                  Portafolio
-                </p>
-                <h2 className="mt-2 font-heading text-5xl font-light md:text-7xl">Obras</h2>
+                {t.profile.artworksLabel}
+              </p>
+              <h2 className="mt-2 font-heading text-5xl font-light md:text-7xl">{t.profile.artworksTitle}</h2>
               </div>
               <p className="hidden select-none font-heading text-[80px] font-light leading-none text-foreground/[0.08] lg:block">
                 {artworks.length}
@@ -514,10 +516,10 @@ export default function LayoutEditorial({
             <div className="mb-8 flex items-end justify-between">
               <div>
                 <p className="text-[10px] uppercase tracking-[0.4em] text-background/25">
-                  Galería inmersiva
+                  {t.profile.galleryLabel}
                 </p>
                 <h2 className="mt-2 font-heading text-4xl font-light text-background md:text-5xl">
-                  Espacio de <span className="italic">{artist.name}</span>
+                  {t.profile.gallerySubtitle} <span className="italic">{artist.name}</span>
                 </h2>
               </div>
               <p className="hidden text-sm text-background/25 lg:block">← →</p>
@@ -558,6 +560,110 @@ export default function LayoutEditorial({
         </section>
       )}
 
+      {/* ─── EXPOSICIONES ─────────────────────────────────── */}
+      {exhibitions && exhibitions.length > 0 && (
+        <section className="border-t border-border py-24 lg:py-40">
+          <div className="mx-auto max-w-[1600px] px-10 lg:px-20">
+            <div className="mb-16 flex items-end justify-between">
+              <div>
+                <p className="select-none font-heading text-[72px] font-light leading-none text-foreground/[0.05]">
+                  04
+                </p>
+                <p className="mt-1 text-[10px] uppercase tracking-[0.4em] text-foreground/35">
+                  {t.profile.exhibitionsLabel}
+                </p>
+                <h2 className="mt-2 font-heading text-5xl font-light md:text-7xl">{t.profile.exhibitionsTitle}</h2>
+              </div>
+              <span className="hidden select-none font-heading text-[80px] font-light leading-none text-foreground/[0.08] lg:block">
+                {exhibitions.length}
+              </span>
+            </div>
+
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {exhibitions.map((exhibition, i) => {
+                const href = `/exposicion/${exhibition.slug || exhibition._id}`
+                return (
+                  <motion.a
+                    key={exhibition._id}
+                    href={href}
+                    initial={{ opacity: 0, y: 24 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6, delay: (i % 3) * 0.1 }}
+                    className="group relative overflow-hidden"
+                  >
+                    {/* Cover image */}
+                    <div className="relative aspect-[4/3] overflow-hidden bg-muted">
+                      {exhibition.cover_url ? (
+                        <img
+                          src={exhibition.cover_url}
+                          alt={exhibition.title}
+                          className="h-full w-full object-cover grayscale transition-all duration-700 group-hover:scale-105 group-hover:grayscale-0"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <div className="flex h-full w-full items-center justify-center bg-foreground/5">
+                          <span className="font-heading text-6xl font-light text-foreground/15">
+                            {exhibition.title.charAt(0)}
+                          </span>
+                        </div>
+                      )}
+                      {/* Status badge */}
+                      {exhibition.status && (
+                        <div className="absolute left-4 top-4">
+                          <span className={`rounded-full px-3 py-1 text-[10px] uppercase tracking-widest backdrop-blur-sm ${
+                            exhibition.status === 'active'
+                              ? 'bg-green-500/20 text-green-300'
+                              : exhibition.status === 'upcoming'
+                              ? 'bg-blue-500/20 text-blue-300'
+                              : 'bg-foreground/10 text-foreground/50'
+                          }`}>
+                            {exhibition.status === 'active' ? t.profile.exhibitionInProgress : exhibition.status === 'upcoming' ? t.profile.exhibitionUpcoming : t.profile.exhibitionPast}
+                          </span>
+                        </div>
+                      )}
+                      {/* Overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                      <div className="absolute bottom-4 right-4 translate-y-2 opacity-0 transition-all duration-400 group-hover:translate-y-0 group-hover:opacity-100">
+                        <span className="flex items-center gap-1 text-xs uppercase tracking-widest text-white">
+                          Ver <ArrowUpRight size={12} />
+                        </span>
+                      </div>
+                    </div>
+                    {/* Info */}
+                    <div className="mt-4 border-b border-border pb-4">
+                      <h3 className="font-heading text-xl font-light leading-tight">{exhibition.title}</h3>
+                      <div className="mt-2 flex items-center gap-3 text-xs text-foreground/40">
+                        {exhibition.date && (
+                          <span>{new Date(exhibition.date).getFullYear()}</span>
+                        )}
+                        {exhibition.venue && (
+                          <>
+                            <span>·</span>
+                            <span>{exhibition.venue}</span>
+                          </>
+                        )}
+                        {exhibition.location && (
+                          <>
+                            <span>·</span>
+                            <span>{exhibition.location}</span>
+                          </>
+                        )}
+                      </div>
+                      {exhibition.description && (
+                        <p className="mt-2 line-clamp-2 text-sm text-foreground/45 leading-relaxed">
+                          {exhibition.description}
+                        </p>
+                      )}
+                    </div>
+                  </motion.a>
+                )
+              })}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* ─── SERVICIOS ────────────────────────────────────── */}
       {services.length > 0 && (
         <section className="border-t border-border py-24 lg:py-40">
@@ -567,10 +673,10 @@ export default function LayoutEditorial({
                 04
               </p>
               <p className="mt-1 text-[10px] uppercase tracking-[0.4em] text-foreground/35">
-                Colaboraciones
+                {t.profile.servicesLabel}
               </p>
               <h2 className="mt-2 font-heading text-5xl font-light md:text-7xl">
-                Trabajar con <span className="italic">{artist.name}</span>
+                {t.profile.servicesTitle} <span className="italic">{artist.name}</span>
               </h2>
             </div>
 
@@ -595,10 +701,10 @@ export default function LayoutEditorial({
                   )}
                   {artist.email && (
                     <a
-                      href={`mailto:${artist.email}?subject=Consulta sobre: ${service.title}`}
+                      href={`mailto:${artist.email}?subject=${t.profile.inquireSubject} ${service.title}`}
                       className="mt-6 inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-foreground/35 transition-all duration-300 hover:text-foreground group-hover:translate-x-1"
                     >
-                      Solicitar <ArrowUpRight size={13} />
+                      {t.profile.requestService} <ArrowUpRight size={13} />
                     </a>
                   )}
                 </motion.div>
@@ -614,16 +720,15 @@ export default function LayoutEditorial({
           <div className="grid gap-14 lg:grid-cols-[1fr_auto]">
             <div>
               <p className="text-[10px] uppercase tracking-[0.45em] text-background/25">
-                Contacto directo
+                {t.profile.contactLabel}
               </p>
               <h2 className="mt-4 font-heading font-light text-background"
                 style={{ fontSize: 'clamp(40px, 7vw, 96px)' }}>
-                Conectar con<br />
+                {t.profile.contactTitle}<br />
                 <span className="italic">{artist.name}</span>
               </h2>
               <p className="mt-6 max-w-md leading-loose text-background/40">
-                Para adquisición de obras, exposiciones o proyectos de colaboración,
-                contacta directamente con el artista.
+                {t.profile.contactDesc}
               </p>
             </div>
             <div className="flex min-w-[220px] flex-col justify-end gap-2">

@@ -1,21 +1,24 @@
 'use client'
 
+import { useTranslation } from '@/components/LanguageProvider'
+import LanguageSwitcher from '@/components/LanguageSwitcher'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Menu, Moon, Sun, X } from 'lucide-react'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 
-const navLinks = [
-  { label: 'Artistas', href: '/artistas' },
-  { label: 'Galería Virtual', href: '/galeria-virtual' },
-  { label: 'Eventos', href: '/#eventos' },
-  { label: 'Categorías', href: '/#categorias' },
-]
-
 export default function Navbar() {
+  const { t } = useTranslation()
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [isDark, setIsDark] = useState(false)
+
+  const navLinks = [
+    { label: t.nav.artists, href: '/artistas' },
+    { label: t.nav.gallery, href: '/galeria-virtual' },
+    { label: t.nav.events, href: '/#eventos' },
+    { label: t.nav.categories, href: '/#categorias' },
+  ]
 
   useEffect(() => {
     const theme = localStorage.getItem('theme')
@@ -81,18 +84,24 @@ export default function Navbar() {
           </nav>
 
           {/* Actions */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
+            {/* Language switcher */}
+            <LanguageSwitcher className={mutedTextClass} />
+
+            {/* Theme toggle */}
             <button
               onClick={toggleTheme}
               className={`h-10 w-10 rounded-full flex items-center justify-center transition-colors duration-300 ${mutedTextClass}`}
-              aria-label="Cambiar tema"
+              aria-label={t.nav.changeTheme}
             >
               {isDark ? <Sun size={18} /> : <Moon size={18} />}
             </button>
+
+            {/* Mobile menu */}
             <button
               className={`h-10 w-10 rounded-full flex items-center justify-center transition-colors duration-300 lg:hidden ${mutedTextClass}`}
               onClick={() => setMenuOpen(!menuOpen)}
-              aria-label="Menú"
+              aria-label={menuOpen ? t.nav.closeMenu : t.nav.openMenu}
             >
               {menuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
@@ -100,7 +109,7 @@ export default function Navbar() {
         </div>
       </motion.header>
 
-      {/* Menú móvil */}
+      {/* Mobile menu */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
@@ -126,6 +135,14 @@ export default function Navbar() {
                 </Link>
               </motion.div>
             ))}
+            {/* Language toggle in mobile menu */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: navLinks.length * 0.08 + 0.05, duration: 0.4 }}
+            >
+              <LanguageSwitcher className="text-foreground/50 hover:text-foreground" />
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>

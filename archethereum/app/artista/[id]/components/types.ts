@@ -64,10 +64,27 @@ export interface Service {
   icon_name?: string
 }
 
+export interface Exhibition {
+  _id: string
+  title: string
+  slug?: string
+  type?: string
+  curator?: string
+  date?: string
+  end_date?: string
+  description?: string
+  cover_url?: string
+  gallery_urls?: string[]
+  status?: string
+  venue?: string
+  location?: string
+}
+
 export interface LayoutProps {
   artist: Artist
   artworks: Artwork[]
   services: Service[]
+  exhibitions: Exhibition[]
   modalArtwork: Artwork | null
   modalIndex: number
   openModal: (artwork: Artwork) => void

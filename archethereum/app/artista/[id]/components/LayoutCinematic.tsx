@@ -19,6 +19,7 @@ export default function LayoutCinematic({
   artist,
   artworks,
   services,
+  exhibitions,
   modalArtwork,
   modalIndex,
   openModal,

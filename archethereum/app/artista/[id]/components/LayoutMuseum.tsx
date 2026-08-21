@@ -29,6 +29,7 @@ export default function LayoutMuseum({
   artist,
   artworks,
   services,
+  exhibitions,
   modalArtwork,
   modalIndex,
   openModal,
