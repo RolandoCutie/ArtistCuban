@@ -1,7 +1,6 @@
 'use client'
 
 import ArtworkManager from '@/components/dashboard/ArtworkManager'
-import DashboardLayout from '@/components/dashboard/DashboardLayout'
 import ExhibitionManager from '@/components/dashboard/ExhibitionManager'
 import { Image as ImageIcon, Theater } from 'lucide-react'
 import { useState } from 'react'
@@ -15,7 +14,7 @@ export default function CatalogoPage() {
   const [activeTab, setActiveTab] = useState('artworks')
 
   return (
-    <DashboardLayout>
+    
       <div className="p-6 lg:p-8 space-y-6">
         <div>
           <h1 className="font-heading text-4xl font-light">Catálogo</h1>
@@ -38,6 +37,6 @@ export default function CatalogoPage() {
         {activeTab === 'artworks' && <ArtworkManager />}
         {activeTab === 'exhibitions' && <ExhibitionManager />}
       </div>
-    </DashboardLayout>
+    
   )
 }

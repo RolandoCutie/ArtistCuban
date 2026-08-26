@@ -1,6 +1,5 @@
 'use client'
 
-import DashboardLayout from '@/components/dashboard/DashboardLayout'
 import { useEffect, useState } from 'react'
 
 interface Metrics {
@@ -96,7 +95,7 @@ export default function DashboardOverviewPage() {
   }
 
   return (
-    <DashboardLayout>
+    
       <div className="p-6 lg:p-8 space-y-8">
         {/* Header */}
         <div className="flex items-center justify-between">
@@ -187,6 +186,6 @@ export default function DashboardOverviewPage() {
           <p className="text-sm text-foreground/50">No se pudieron cargar las métricas.</p>
         )}
       </div>
-    </DashboardLayout>
+    
   )
 }

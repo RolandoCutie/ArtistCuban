@@ -1,6 +1,5 @@
 'use client'
 
-import DashboardLayout from '@/components/dashboard/DashboardLayout'
 import { BarChart3, ChevronLeft, ChevronRight, Download, TrendingUp } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
 
@@ -161,7 +160,7 @@ export default function ReportesPage() {
   const activeTab = CHART_TABS.find((t) => t.key === activeChart) || CHART_TABS[0]
 
   return (
-    <DashboardLayout>
+    
       <div className="space-y-8">
         <div className="flex items-start justify-between">
           <div>
@@ -272,6 +271,6 @@ export default function ReportesPage() {
           </div>
         )}
       </div>
-    </DashboardLayout>
+    
   )
 }

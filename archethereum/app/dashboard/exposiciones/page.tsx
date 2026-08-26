@@ -1,6 +1,5 @@
 'use client'
 
-import DashboardLayout from '@/components/dashboard/DashboardLayout'
 import ImageUpload from '@/components/dashboard/ImageUpload'
 import {
     ChevronDown,
@@ -216,7 +215,7 @@ export default function ExhibitionsPage() {
 
   if (creating || editing) {
     return (
-      <DashboardLayout>
+      
         <div className="mx-auto max-w-4xl space-y-8">
           <div className="flex items-center justify-between">
             <h1 className="font-heading text-3xl font-light">
@@ -457,12 +456,12 @@ export default function ExhibitionsPage() {
             </div>
           </form>
         </div>
-      </DashboardLayout>
+      
     )
   }
 
   return (
-    <DashboardLayout>
+    
       <div className="space-y-8">
         {/* Header */}
         <div className="flex items-start justify-between">
@@ -554,6 +553,6 @@ export default function ExhibitionsPage() {
           </div>
         )}
       </div>
-    </DashboardLayout>
+    
   )
 }

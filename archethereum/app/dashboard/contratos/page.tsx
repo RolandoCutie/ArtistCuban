@@ -1,7 +1,6 @@
 'use client'
 
 import ArtistAutocomplete from '@/components/dashboard/ArtistAutocomplete'
-import DashboardLayout from '@/components/dashboard/DashboardLayout'
 import { Eye, FileText, Trash2 } from 'lucide-react'
 import Link from 'next/link'
 import { useCallback, useEffect, useState } from 'react'
@@ -161,7 +160,7 @@ export default function ContratosPage() {
   }
 
   return (
-    <DashboardLayout>
+    
       <div className="p-6 lg:p-8 space-y-6">
         <div className="flex items-center justify-between">
           <div>
@@ -482,6 +481,6 @@ export default function ContratosPage() {
           </div>
         )}
       </div>
-    </DashboardLayout>
+    
   )
 }

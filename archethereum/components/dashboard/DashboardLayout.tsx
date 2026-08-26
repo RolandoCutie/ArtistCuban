@@ -16,7 +16,7 @@ import {
     X,
 } from 'lucide-react'
 import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import { useState } from 'react'
 
 const NAV_ITEMS = [
@@ -33,12 +33,12 @@ const NAV_ITEMS = [
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
-  const router = useRouter()
   const [mobileOpen, setMobileOpen] = useState(false)
 
   const handleLogout = async () => {
     await fetch('/api/auth/logout', { method: 'POST' })
-    router.replace('/dashboard/login')
+    // Navegación dura para limpiar el estado de Next.js y forzar el middleware
+    window.location.href = '/dashboard'
   }
 
   return (
@@ -74,13 +74,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </nav>
 
         <div className="border-t border-border p-4 space-y-1">
-          <Link
+          <a
             href="/"
             className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs text-foreground/40 hover:text-foreground hover:bg-muted transition-colors"
           >
             <ChevronLeft size={14} />
             Ver sitio público
-          </Link>
+          </a>
           <button
             onClick={handleLogout}
             className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-xs text-foreground/40 hover:text-red-500 hover:bg-red-50/10 transition-colors"

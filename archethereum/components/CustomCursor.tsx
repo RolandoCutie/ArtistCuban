@@ -23,11 +23,11 @@ export default function CustomCursor() {
     let rafId: number
 
     const applyDot = () => {
-      dot.style.transform = `translate(${mouse.x - 4}px, ${mouse.y - 4}px)`
+      dot.style.transform = `translate(calc(${mouse.x}px - 50%), calc(${mouse.y}px - 50%))`
     }
 
     const applyRing = () => {
-      ring.style.transform = `translate(${ringPos.x - 20}px, ${ringPos.y - 20}px)`
+      ring.style.transform = `translate(calc(${ringPos.x}px - 50%), calc(${ringPos.y}px - 50%))`
     }
 
     const onMove = (e: MouseEvent) => {
@@ -40,11 +40,8 @@ export default function CustomCursor() {
       const wasPointer = isPointer
       isPointer = !!(el?.closest('a, button, input, [role="button"], [data-cursor="view"]'))
       if (isPointer !== wasPointer) {
-        const s = ring.style as CSSStyleDeclaration & { '--ring-size': string }
         ring.style.width = isPointer ? '48px' : '32px'
         ring.style.height = isPointer ? '48px' : '32px'
-        ring.style.marginLeft = isPointer ? '-24px' : '-16px'
-        ring.style.marginTop = isPointer ? '-24px' : '-16px'
       }
     }
 
@@ -94,14 +91,13 @@ export default function CustomCursor() {
         style={{
           width: 32,
           height: 32,
-          marginLeft: -16,
-          marginTop: -16,
           borderRadius: '50%',
           border: '1.5px solid white',
           mixBlendMode: 'difference',
           opacity: 0,
           willChange: 'transform',
-          transition: 'width 0.2s ease, height 0.2s ease, margin 0.2s ease',
+          transition: 'width 0.2s ease, height 0.2s ease',
+          transformOrigin: 'center center',
         }}
       />
     </>

@@ -1,7 +1,6 @@
 'use client'
 
 import ArtistAutocomplete from '@/components/dashboard/ArtistAutocomplete'
-import DashboardLayout from '@/components/dashboard/DashboardLayout'
 import { Calendar, CheckCircle, RefreshCw, XCircle } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
 
@@ -79,7 +78,7 @@ export default function SuscripcionesPage() {
   const daysRemaining = (endDate: string) => Math.ceil((new Date(endDate).getTime() - Date.now()) / 86400000)
 
   return (
-    <DashboardLayout>
+    
       <div className="p-6 lg:p-8 space-y-6">
         <div className="flex items-center justify-between">
           <div>
@@ -222,6 +221,6 @@ export default function SuscripcionesPage() {
           </div>
         )}
       </div>
-    </DashboardLayout>
+    
   )
 }

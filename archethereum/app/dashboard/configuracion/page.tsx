@@ -1,11 +1,10 @@
 'use client'
 
-import DashboardLayout from '@/components/dashboard/DashboardLayout'
 import { Settings } from 'lucide-react'
 
 export default function ConfiguracionPage() {
   return (
-    <DashboardLayout>
+    
       <div className="p-6 lg:p-8 space-y-8">
         <div>
           <h1 className="font-heading text-4xl font-light">Configuración</h1>
@@ -71,6 +70,6 @@ export default function ConfiguracionPage() {
           </div>
         </div>
       </div>
-    </DashboardLayout>
+    
   )
 }
