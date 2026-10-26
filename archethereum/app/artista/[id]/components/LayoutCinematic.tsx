@@ -2,17 +2,18 @@
 
 import { motion, useAnimation } from 'framer-motion'
 import {
-  ArrowUpRight,
-  Award,
-  ChevronDown,
-  Globe,
-  Mail,
-  MapPin,
-  MessageCircle,
-  Phone,
+    ArrowUpRight,
+    Award,
+    ChevronDown,
+    Globe,
+    Mail,
+    MapPin,
+    MessageCircle,
+    Phone,
 } from 'lucide-react'
 import { useEffect } from 'react'
 import ArtworkModal from './ArtworkModal'
+import { NarrativeLead, NarrativeRibbon } from './NarrativeSystem'
 import type { LayoutProps } from './types'
 
 export default function LayoutCinematic({
@@ -188,6 +189,10 @@ export default function LayoutCinematic({
         </motion.div>
       </section>
 
+      <NarrativeRibbon theme="cinematic" artistName={artist.name} />
+
+      <NarrativeLead theme="cinematic" stage="act2" />
+
       {/* ─── MANIFIESTO ───────────────────────────────────── */}
       {artist.inspiring_quote && (
         <section className="bg-foreground py-24 lg:py-36">
@@ -300,6 +305,8 @@ export default function LayoutCinematic({
           </div>
         </div>
       </section>
+
+      <NarrativeLead theme="cinematic" stage="act3" />
 
       {/* ─── OBRAS — OBRA DESTACADA + GRID ────────────────── */}
       {artworks.length > 0 && (

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;700&family=Archivo+Black&family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=DM+Serif+Display:ital@0;1&family=Fraunces:opsz,wght,SOFT@9..144,400..700,75&family=IBM+Plex+Sans:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Manrope:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,300..700&family=Nunito+Sans:wght@300;400;600;700&family=Playfair+Display:wght@500;600;700&family=Prata&family=Sora:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;700&family=Work+Sans:wght@300;400;500;600&display=swap');
 
 @import "tailwindcss";
 
@@ -56,7 +56,7 @@
   body {
     background: hsl(var(--background));
     color: hsl(var(--foreground));
-    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    font-family: var(--font-body, 'Inter', ui-sans-serif, system-ui, sans-serif);
     font-size: 18px;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
@@ -91,7 +91,7 @@
 
   --font-heading: 'Cormorant Garamond', Georgia, serif;
   --font-body: 'Inter', ui-sans-serif, system-ui, sans-serif;
-  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --font-display: var(--font-heading);
 
   --radius: 0.25rem;
   --radius-lg: 0.25rem;
@@ -100,8 +100,8 @@
 }
 
 @layer utilities {
-  .font-heading { font-family: 'Cormorant Garamond', Georgia, serif; }
-  .font-display { font-family: 'Cormorant Garamond', Georgia, serif; }
+  .font-heading { font-family: var(--font-heading, 'Cormorant Garamond', Georgia, serif); }
+  .font-display { font-family: var(--font-display, var(--font-heading, 'Cormorant Garamond', Georgia, serif)); }
   .text-balance { text-wrap: balance; }
 
   .hide-scrollbar::-webkit-scrollbar { display: none; }

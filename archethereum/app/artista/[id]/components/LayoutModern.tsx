@@ -12,6 +12,7 @@ import {
 } from 'lucide-react'
 import { useRef } from 'react'
 import ArtworkModal from './ArtworkModal'
+import { NarrativeLead, NarrativeRibbon } from './NarrativeSystem'
 import type { LayoutProps } from './types'
 
 export default function LayoutModern({
@@ -267,6 +268,10 @@ export default function LayoutModern({
         </motion.div>
       </section>
 
+      <NarrativeRibbon theme="modern" artistName={artist.name} />
+
+      <NarrativeLead theme="modern" stage="act2" />
+
       {/* ─── SOBRE EL ARTISTA (bio + info grid) ──────────── */}
       <section className="border-t border-border py-24 lg:py-40">
         <div className="mx-auto max-w-[1600px] px-8 lg:px-16">
@@ -359,6 +364,8 @@ export default function LayoutModern({
           </div>
         </div>
       </section>
+
+      <NarrativeLead theme="modern" stage="act3" />
 
       {/* ─── OBRAS — bento asimétrico ─────────────────────── */}
       {artworks.length > 0 && (

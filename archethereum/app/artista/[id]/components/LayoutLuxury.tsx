@@ -11,6 +11,7 @@ import {
     Phone,
 } from 'lucide-react'
 import ArtworkModal from './ArtworkModal'
+import { NarrativeLead, NarrativeRibbon } from './NarrativeSystem'
 import type { LayoutProps } from './types'
 
 function initials(name: string): string {
@@ -192,6 +193,10 @@ export default function LayoutLuxury({
         </motion.div>
       </section>
 
+      <NarrativeRibbon theme="luxury" artistName={artist.name} />
+
+      <NarrativeLead theme="luxury" stage="act2" />
+
       {/* ─── MANIFIESTO ───────────────────────────────────── */}
       {artist.inspiring_quote && (
         <section className="border-t border-border py-24 lg:py-36">
@@ -370,6 +375,8 @@ export default function LayoutLuxury({
           </div>
         </div>
       </section>
+
+      <NarrativeLead theme="luxury" stage="act3" />
 
       {/* ─── LA COLECCIÓN — obras enmarcadas ──────────────── */}
       {artworks.length > 0 && (

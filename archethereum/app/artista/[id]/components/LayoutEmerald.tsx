@@ -12,6 +12,7 @@ import {
     Phone,
 } from 'lucide-react'
 import ArtworkModal from './ArtworkModal'
+import { NarrativeLead, NarrativeRibbon } from './NarrativeSystem'
 import type { LayoutProps } from './types'
 
 export default function LayoutEmerald({
@@ -129,6 +130,10 @@ export default function LayoutEmerald({
         </motion.div>
       </section>
 
+      <NarrativeRibbon theme="emerald" artistName={artist.name} />
+
+      <NarrativeLead theme="emerald" stage="act2" />
+
       {/* ─── MANIFIESTO — panel esmeralda ─────────────────── */}
       {artist.inspiring_quote && (
         <section className="bg-gradient-to-br from-[#0b2017] to-[#123528] py-24 lg:py-36">
@@ -243,6 +248,8 @@ export default function LayoutEmerald({
           </div>
         </div>
       </section>
+
+      <NarrativeLead theme="emerald" stage="act3" />
 
       {/* ─── OBRAS — obra principal + mosaico ─────────────── */}
       {artworks.length > 0 && (

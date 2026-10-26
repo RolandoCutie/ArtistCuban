@@ -11,6 +11,7 @@ import {
     Phone,
 } from 'lucide-react'
 import ArtworkModal from './ArtworkModal'
+import { NarrativeLead, NarrativeRibbon } from './NarrativeSystem'
 import type { LayoutProps } from './types'
 
 const BRUTAL_COLORS = ['#c2410c', '#4f46e5', '#16a34a', '#db2777', '#d97706', '#0891b2']
@@ -176,6 +177,10 @@ export default function LayoutBrutal({
         {marqueeItems.length > 0 && <Marquee items={marqueeItems} />}
       </section>
 
+      <NarrativeRibbon theme="brutal" artistName={artist.name} />
+
+      <NarrativeLead theme="brutal" stage="act2" />
+
       {/* ─── MANIFIESTO — bloque de color ─────────────────── */}
       {artist.inspiring_quote && (
         <section className="bg-accent border-b-4 border-foreground py-20 lg:py-28">
@@ -309,6 +314,8 @@ export default function LayoutBrutal({
           )}
         </div>
       </section>
+
+      <NarrativeLead theme="brutal" stage="act3" />
 
       {/* ─── OBRAS — checklist de exposición ──────────────── */}
       {artworks.length > 0 && (

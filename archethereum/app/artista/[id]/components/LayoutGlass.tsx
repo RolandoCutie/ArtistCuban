@@ -11,6 +11,7 @@ import {
     Phone,
 } from 'lucide-react'
 import ArtworkModal from './ArtworkModal'
+import { NarrativeLead, NarrativeRibbon } from './NarrativeSystem'
 import type { LayoutProps } from './types'
 
 const cardCls =
@@ -157,6 +158,10 @@ export default function LayoutGlass({
         </div>
       </section>
 
+      <NarrativeRibbon theme="glass" artistName={artist.name} />
+
+      <NarrativeLead theme="glass" stage="act2" />
+
       {/* ─── MANIFIESTO — tarjeta de luz ──────────────────── */}
       {artist.inspiring_quote && (
         <section className="px-8 py-16 lg:px-16">
@@ -250,6 +255,8 @@ export default function LayoutGlass({
           </div>
         </div>
       </section>
+
+      <NarrativeLead theme="glass" stage="act3" />
 
       {/* ─── OBRAS — galería de cristal ───────────────────── */}
       {artworks.length > 0 && (

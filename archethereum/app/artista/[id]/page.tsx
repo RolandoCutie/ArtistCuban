@@ -4,11 +4,36 @@ import ArtistModel from '@/lib/models/Artist'
 import ArtworkModel from '@/lib/models/Artwork'
 import ExhibitionModel from '@/lib/models/Exhibition'
 import ServiceModel from '@/lib/models/Service'
+import SubscriptionModel from '@/lib/models/Subscription'
 import connectDB from '@/lib/mongodb'
 import { slugify } from '@/lib/slug'
+import { TEMPLATES } from '@/lib/templates'
 import mongoose from 'mongoose'
 import { cookies } from 'next/headers'
 import Link from 'next/link'
+
+const VALID_TEMPLATE_IDS = new Set(TEMPLATES.map((tpl) => tpl.id))
+
+function resolvePreviewTemplate(raw?: string | string[]): string | undefined {
+  const candidate = Array.isArray(raw) ? raw[0] : raw
+  if (!candidate) return undefined
+  return VALID_TEMPLATE_IDS.has(candidate) ? candidate : undefined
+}
+
+/** Returns true if the artist has NO expired/suspended subscription blocking them */
+async function checkSubscriptionActive(artistId: string): Promise<boolean> {
+  const today = new Date().toISOString().split('T')[0]
+  // Find the most recent subscription for this artist
+  const sub = await SubscriptionModel.findOne({ artist_id: artistId })
+    .sort({ end_date: -1 })
+    .lean()
+  if (!sub) return true // No subscription record → show profile
+  // Block if subscription exists but is expired or suspended
+  if (sub.status === 'expired' || sub.status === 'suspended') return false
+  // Block if active/pending but end_date has passed
+  if (sub.end_date < today) return false
+  return true
+}
 
 async function getArtistData(id: string) {
   try {
@@ -58,14 +83,24 @@ async function getArtistData(id: string) {
 
 export default async function ArtistDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>
+  searchParams?: Promise<Record<string, string | string[] | undefined>>
 }) {
   const { id } = await params
   const cookieStore = await cookies()
+  const resolvedSearchParams = searchParams ? await searchParams : undefined
+
   const localeCookie = cookieStore.get('archethereum_locale')?.value
   const locale = isValidLocale(localeCookie) ? localeCookie : 'es'
   const t = getDictionary(locale)
+  const expectedAdminToken = process.env.ADMIN_SESSION_SECRET || 'archethereum-admin-secret-2026'
+  const adminToken = cookieStore.get('admin_token')?.value
+  const previewTemplate =
+    adminToken === expectedAdminToken
+      ? resolvePreviewTemplate(resolvedSearchParams?.previewTemplate)
+      : undefined
 
   const data = await getArtistData(id)
 
@@ -106,16 +141,20 @@ export default async function ArtistDetailPage({
 
   // Serialize Mongoose docs to plain objects for client components
   const artistPlain = JSON.parse(JSON.stringify(artist))
+  const artistWithPreview = previewTemplate
+    ? { ...artistPlain, template: previewTemplate }
+    : artistPlain
   const artworksPlain = JSON.parse(JSON.stringify(artworks))
   const servicesPlain = JSON.parse(JSON.stringify(services))
   const exhibitionsPlain = JSON.parse(JSON.stringify(exhibitions))
 
   return (
     <ArtistViewer
-      artist={artistPlain}
+      artist={artistWithPreview}
       artworks={artworksPlain}
       services={servicesPlain}
       exhibitions={exhibitionsPlain}
+      previewTemplate={previewTemplate}
     />
   )
 }

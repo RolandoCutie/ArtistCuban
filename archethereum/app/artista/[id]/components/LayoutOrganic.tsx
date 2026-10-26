@@ -11,6 +11,7 @@ import {
     Phone,
 } from 'lucide-react'
 import ArtworkModal from './ArtworkModal'
+import { NarrativeLead, NarrativeRibbon } from './NarrativeSystem'
 import type { LayoutProps } from './types'
 
 export default function LayoutOrganic({
@@ -236,6 +237,10 @@ export default function LayoutOrganic({
         </motion.div>
       </section>
 
+      <NarrativeRibbon theme="organic" artistName={artist.name} />
+
+      <NarrativeLead theme="organic" stage="act2" />
+
       {/* ─── QUOTE CON SOFT MORPHING ─────────────────────── */}
       {artist.inspiring_quote && (
         <section className="py-20 lg:py-32 relative overflow-hidden">
@@ -421,6 +426,8 @@ export default function LayoutOrganic({
           </div>
         </div>
       </section>
+
+      <NarrativeLead theme="organic" stage="act3" />
 
       {/* ─── OBRAS — masonry redondeado ───────────────────── */}
       {artworks.length > 0 && (

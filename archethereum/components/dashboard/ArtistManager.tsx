@@ -2,7 +2,7 @@
 
 import { allSpecialties } from '@/lib/categories'
 import { slugify } from '@/lib/slug'
-import { TEMPLATES } from '@/lib/templates'
+import { TEMPLATES, type TemplateConfig } from '@/lib/templates'
 import { ExternalLink, Pencil, Star, Trash2 } from 'lucide-react'
 import Link from 'next/link'
 import { useCallback, useEffect, useState } from 'react'
@@ -74,6 +74,210 @@ const EDIT_TABS = [
   { id: 'services', label: 'Servicios' },
 ]
 
+function TemplatePreview({ template, selected }: { template: TemplateConfig; selected: boolean }) {
+  const textColor = template.preview_text ?? '#888888'
+  const accentColor = template.preview_accent ?? '#888888'
+  const softText = `${textColor}22`
+  const softAccent = `${accentColor}22`
+
+  const bar = (width: string, height: string, background: string, opacity = 1) => (
+    <div className="rounded-full" style={{ width, height, background, opacity }} />
+  )
+
+  const previewContent = () => {
+    switch (template.previewStyle) {
+      case 'editorial':
+        return (
+          <>
+            <div className="absolute left-4 top-14 h-20 w-16 rounded-[1.35rem]" style={{ background: `linear-gradient(180deg, ${softAccent}, ${softText})` }} />
+            <div className="absolute left-24 top-16 right-5 space-y-2.5">
+              {bar('72%', '0.9rem', textColor, 0.86)}
+              {bar('52%', '0.45rem', textColor, 0.26)}
+            </div>
+            <div className="absolute bottom-5 right-5 grid w-28 grid-cols-2 gap-2">
+              <div className="h-10 rounded-2xl" style={{ background: softText }} />
+              <div className="h-14 rounded-[1.2rem]" style={{ background: softAccent }} />
+            </div>
+          </>
+        )
+      case 'luxury':
+        return (
+          <>
+            <div className="absolute left-5 right-5 top-14 rounded-[1.4rem] border px-4 py-5" style={{ borderColor: `${accentColor}55`, background: 'rgba(255,255,255,0.7)' }}>
+              {bar('62%', '0.8rem', textColor, 0.94)}
+              <div className="mt-3 h-px w-full" style={{ background: `linear-gradient(90deg, transparent, ${accentColor}, transparent)` }} />
+              <div className="mt-3 flex items-center gap-2">
+                <div className="h-8 w-8 rounded-full border" style={{ borderColor: `${accentColor}66` }} />
+                {bar('34%', '0.42rem', accentColor, 0.66)}
+              </div>
+            </div>
+          </>
+        )
+      case 'cinematic':
+        return (
+          <>
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,#ffffff22,transparent_42%),linear-gradient(180deg,transparent,rgba(0,0,0,0.72))]" />
+            <div className="absolute left-4 right-10 top-16 space-y-3">
+              {bar('84%', '1rem', textColor, 0.95)}
+              {bar('64%', '1rem', textColor, 0.95)}
+            </div>
+            <div className="absolute bottom-5 left-4 right-4 flex gap-2">
+              {[0.9, 0.7, 0.45].map((opacity, index) => (
+                <div key={index} className="h-8 flex-1 rounded-2xl" style={{ background: accentColor, opacity }} />
+              ))}
+            </div>
+          </>
+        )
+      case 'museum':
+        return (
+          <>
+            <div className="absolute left-5 right-5 top-14 rounded-[1.2rem] border p-3" style={{ borderColor: `${textColor}25`, background: 'rgba(255,255,255,0.32)' }}>
+              <div className="grid grid-cols-[1.15fr_0.85fr] gap-3">
+                <div className="h-20 rounded-[1rem] border" style={{ borderColor: `${accentColor}55`, background: softText }} />
+                <div className="space-y-2 pt-1">
+                  {bar('100%', '0.5rem', textColor, 0.8)}
+                  {bar('76%', '0.42rem', textColor, 0.28)}
+                  <div className="mt-4 rounded-xl px-2 py-2" style={{ background: softAccent }}>
+                    {bar('88%', '0.38rem', accentColor, 0.7)}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </>
+        )
+      case 'modern':
+        return (
+          <>
+            <div className="absolute -right-6 top-12 h-24 w-24 rounded-full blur-2xl" style={{ background: `${accentColor}55` }} />
+            <div className="absolute left-4 right-4 top-14 grid grid-cols-[1.1fr_0.9fr] gap-2">
+              <div className="space-y-2 rounded-[1.4rem] bg-white/75 p-3 shadow-sm">
+                {bar('78%', '0.82rem', textColor, 0.9)}
+                {bar('52%', '0.42rem', textColor, 0.32)}
+                <div className="flex gap-2 pt-1">
+                  <div className="h-8 flex-1 rounded-2xl" style={{ background: softAccent }} />
+                  <div className="h-8 w-10 rounded-2xl" style={{ background: softText }} />
+                </div>
+              </div>
+              <div className="grid gap-2">
+                <div className="h-11 rounded-[1.15rem]" style={{ background: softAccent }} />
+                <div className="h-15 rounded-[1.6rem] bg-white/65" />
+              </div>
+            </div>
+          </>
+        )
+      case 'glass':
+        return (
+          <>
+            <div className="absolute left-6 top-14 h-16 w-16 rounded-full blur-2xl" style={{ background: `${accentColor}44` }} />
+            <div className="absolute bottom-6 right-6 h-20 w-20 rounded-full blur-3xl" style={{ background: `${textColor}22` }} />
+            <div className="absolute left-4 right-4 top-16 space-y-3">
+              <div className="rounded-[1.35rem] border px-4 py-3 backdrop-blur-xl" style={{ borderColor: `${textColor}18`, background: 'rgba(255,255,255,0.08)' }}>
+                {bar('60%', '0.7rem', textColor, 0.84)}
+                {bar('90%', '0.42rem', textColor, 0.22)}
+              </div>
+              <div className="ml-auto w-[72%] rounded-[1.35rem] border px-4 py-4 backdrop-blur-xl" style={{ borderColor: `${accentColor}22`, background: 'rgba(255,255,255,0.05)' }}>
+                <div className="flex gap-2">
+                  <div className="h-10 flex-1 rounded-2xl" style={{ background: softAccent }} />
+                  <div className="h-10 w-10 rounded-2xl" style={{ background: softText }} />
+                </div>
+              </div>
+            </div>
+          </>
+        )
+      case 'minimal':
+        return (
+          <>
+            <div className="absolute left-5 right-5 top-14">
+              <div className="flex items-end justify-between">
+                <div>
+                  {bar('8rem', '0.82rem', textColor, 0.94)}
+                  <div className="mt-5 h-px w-24" style={{ background: `${textColor}33` }} />
+                </div>
+                <p className="text-[2.8rem] font-light leading-none" style={{ color: `${textColor}14` }}>01</p>
+              </div>
+            </div>
+            <div className="absolute bottom-5 left-5 right-5 flex gap-2">
+              <div className="h-11 flex-1 border" style={{ borderColor: `${textColor}16` }} />
+              <div className="h-11 w-14 border" style={{ borderColor: `${textColor}16` }} />
+            </div>
+          </>
+        )
+      case 'immersive':
+        return (
+          <>
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_15%,rgba(58,156,80,0.22),transparent_26%),radial-gradient(circle_at_80%_20%,rgba(255,255,255,0.12),transparent_22%)]" />
+            <div className="absolute left-5 right-5 top-14 rounded-[1.6rem] border p-3" style={{ borderColor: `${accentColor}35`, background: 'rgba(15,26,20,0.64)' }}>
+              <div className="h-14 rounded-[1.2rem]" style={{ background: `linear-gradient(135deg, ${softAccent}, ${softText})` }} />
+              <div className="mt-3 flex items-center justify-between">
+                {bar('42%', '0.45rem', textColor, 0.9)}
+                <div className="h-6 w-6 rounded-full" style={{ background: accentColor }} />
+              </div>
+            </div>
+          </>
+        )
+      case 'organic':
+        return (
+          <>
+            <div className="absolute left-4 top-14 h-14 w-14 rounded-full blur-xl" style={{ background: `${accentColor}44` }} />
+            <div className="absolute right-8 top-16 h-12 w-12 rounded-full blur-lg" style={{ background: `${textColor}18` }} />
+            <div className="absolute left-5 right-5 top-16 flex items-center gap-3">
+              <div className="h-16 w-16 rounded-full border-4" style={{ borderColor: `${accentColor}44`, background: softText }} />
+              <div className="flex-1 space-y-2">
+                {bar('74%', '0.82rem', textColor, 0.86)}
+                <div className="flex flex-wrap gap-2 pt-1">
+                  {[accentColor, textColor, accentColor].map((background, index) => (
+                    <div key={index} className="h-5 rounded-full" style={{ width: index === 1 ? '2.4rem' : '3rem', background, opacity: index === 1 ? 0.18 : 0.48 }} />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </>
+        )
+      case 'brutal':
+        return (
+          <>
+            <div className="absolute left-4 top-14 h-14 w-20 -rotate-2 border-[3px]" style={{ borderColor: textColor, background: `${accentColor}55` }} />
+            <div className="absolute right-4 top-18 h-16 w-24 rotate-2 border-[3px] bg-white/55" style={{ borderColor: textColor }} />
+            <div className="absolute bottom-5 left-4 right-4 space-y-2">
+              {bar('78%', '0.95rem', textColor, 1)}
+              <div className="flex gap-2">
+                <div className="h-5 w-16 border-2" style={{ borderColor: textColor, background: accentColor }} />
+                <div className="h-5 flex-1 border-2" style={{ borderColor: textColor }} />
+              </div>
+            </div>
+          </>
+        )
+      default:
+        return (
+          <div className="absolute left-4 right-4 top-16 space-y-3">
+            {bar('62%', '0.85rem', textColor, 0.88)}
+            {bar('38%', '0.45rem', textColor, 0.3)}
+          </div>
+        )
+    }
+  }
+
+  return (
+    <div className={`relative h-44 overflow-hidden ${template.preview_bg}`}>
+      <div className="absolute inset-x-0 top-0 flex items-center justify-between px-4 pt-3">
+        <span
+          className="rounded-full border px-2.5 py-1 text-[9px] font-medium uppercase tracking-[0.28em]"
+          style={{ borderColor: `${textColor}24`, color: textColor, background: `${textColor}10` }}
+        >
+          {template.layoutStyle}
+        </span>
+        {selected && (
+          <span className="flex h-6 min-w-6 items-center justify-center rounded-full bg-foreground px-2 text-[10px] font-semibold text-background shadow-lg">
+            Activa
+          </span>
+        )}
+      </div>
+      {previewContent()}
+      <div className="absolute inset-x-0 bottom-0 h-1.5" style={{ background: `linear-gradient(90deg, ${accentColor}, ${textColor})` }} />
+    </div>
+  )
+}
+
 export default function ArtistManager() {
   const [artists, setArtists] = useState<Artist[]>([])
   const [loading, setLoading] = useState(true)
@@ -84,6 +288,8 @@ export default function ArtistManager() {
   const [coverUrl, setCoverUrl] = useState('')
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
   const [selectedTemplate, setSelectedTemplate] = useState('template1')
+  const [compareTemplates, setCompareTemplates] = useState<string[]>(['template1'])
+  const [inlinePreviewExpanded, setInlinePreviewExpanded] = useState(true)
   const [isActive, setIsActive] = useState(true)
   const [socialLinks, setSocialLinks] = useState<Record<string, string>>({})
   const [sections, setSections] = useState({
@@ -92,7 +298,8 @@ export default function ArtistManager() {
     influences: false, education: false,
   })
 
-  const { register, handleSubmit, reset } = useForm<FormData>()
+  const { register, handleSubmit, reset, watch } = useForm<FormData>()
+  const watchedName = watch('name')
 
   const fetchArtists = useCallback(async () => {
     setLoading(true)
@@ -106,6 +313,28 @@ export default function ArtistManager() {
 
   useEffect(() => { fetchArtists() }, [fetchArtists])
 
+  useEffect(() => {
+    setCompareTemplates((prev) => {
+      if (prev.includes(selectedTemplate)) return prev
+      return [selectedTemplate, ...prev].slice(0, 3)
+    })
+  }, [selectedTemplate])
+
+  const toggleCompareTemplate = (templateId: string) => {
+    setCompareTemplates((prev) => {
+      if (prev.includes(templateId)) {
+        if (prev.length === 1) return prev
+        return prev.filter((id) => id !== templateId)
+      }
+
+      if (prev.length >= 3) {
+        return [...prev.slice(0, 2), templateId]
+      }
+
+      return [...prev, templateId]
+    })
+  }
+
   const startEdit = (artist: Artist) => {
     setEditing(artist)
     setCreating(false)
@@ -114,6 +343,8 @@ export default function ArtistManager() {
     setCoverUrl(artist.cover_url || '')
     setSelectedCategories(artist.categories || [])
     setSelectedTemplate(artist.template || 'template1')
+    setCompareTemplates([artist.template || 'template1'])
+    setInlinePreviewExpanded(true)
     setIsActive(artist.is_active !== false)
     setSocialLinks((artist.social_links as Record<string, string>) || {})
     setSections({ bio: true, artworks: true, exhibitions: true, services: true, social: true, contact: true, gallery: false, awards: false, influences: false, education: false, ...(artist as {sections?: Record<string, boolean>}).sections })
@@ -148,6 +379,8 @@ export default function ArtistManager() {
     setCoverUrl('')
     setSelectedCategories([])
     setSelectedTemplate('template1')
+    setCompareTemplates(['template1'])
+    setInlinePreviewExpanded(true)
     setIsActive(true)
     setSocialLinks({})
     setSections({ bio: true, artworks: true, exhibitions: true, services: true, social: true, contact: true, gallery: false, awards: false, influences: false, education: false })
@@ -197,6 +430,9 @@ export default function ArtistManager() {
   }
 
   if (creating || (editing && editTab === 'profile')) {
+    const previewName = (watchedName || editing?.name || '').trim() || editing?.name || ''
+    const previewSlug = editing ? editing.slug || slugify(previewName) : ''
+
     return (
       <div className="space-y-8">
         {editing && (
@@ -398,72 +634,190 @@ export default function ArtistManager() {
             <div className="mb-5 flex items-center justify-between">
               <div>
                 <h3 className="font-heading text-xl">Plantilla del perfil</h3>
-                <p className="mt-1 text-xs text-foreground/40">
-                  Selecciona el estilo visual del perfil público. Guarda y usa &quot;Ver perfil&quot; para previsualizar.
+                <p className="mt-1 max-w-3xl text-xs text-foreground/40">
+                  Elige una plantilla que venda la identidad del artista desde el primer vistazo. Cada opción tiene una promesa visual distinta para ayudarte a cerrar perfiles con más impacto.
                 </p>
               </div>
               {editing && (
                 <Link
-                  href={`/artista/${editing.slug || slugify(editing.name)}`}
+                  href={{
+                    pathname: `/artista/${editing.slug || slugify(editing.name)}`,
+                    query: { previewTemplate: selectedTemplate },
+                  }}
                   target="_blank"
                   className="flex shrink-0 items-center gap-1.5 rounded-full border border-border bg-background px-4 py-2 text-xs font-medium transition-all hover:border-foreground hover:shadow-sm"
                 >
-                  <ExternalLink size={12} /> Ver perfil
+                  <ExternalLink size={12} /> Previsualizar (sin guardar)
                 </Link>
               )}
             </div>
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-              {TEMPLATES.map((t) => (
-                <button
-                  key={t.id}
-                  type="button"
-                  onClick={() => setSelectedTemplate(t.id)}
-                  className={`group rounded-xl border-2 text-left transition-all duration-200 overflow-hidden ${
-                    selectedTemplate === t.id
-                      ? 'border-foreground shadow-lg shadow-foreground/10 scale-[1.02]'
-                      : 'border-border hover:border-foreground/50 hover:shadow-md'
-                  }`}
-                >
-                  {/* Visual mock-up preview */}
-                  <div className={`relative h-28 w-full overflow-hidden ${t.preview_bg}`}>
-                    {/* Mock header bar */}
-                    <div className="absolute left-0 right-0 top-0 flex items-center justify-between px-3 pt-2.5">
-                      <div className="h-1 w-6 rounded-full opacity-30" style={{ background: t.preview_text ?? '#888' }} />
-                      <div className="flex gap-1">
-                        <div className="h-1 w-1 rounded-full opacity-20" style={{ background: t.preview_text ?? '#888' }} />
-                        <div className="h-1 w-1 rounded-full opacity-20" style={{ background: t.preview_text ?? '#888' }} />
-                        <div className="h-1 w-1 rounded-full opacity-20" style={{ background: t.preview_text ?? '#888' }} />
+            <div className="mb-5 rounded-[1.5rem] border border-border bg-muted/30 p-4">
+              <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                <div>
+                  <p className="text-[11px] uppercase tracking-[0.28em] text-foreground/45">Catálogo premium</p>
+                  <p className="mt-1 max-w-2xl text-sm text-foreground/65">
+                    No son solo colores: aquí estás eligiendo el posicionamiento comercial del artista, desde lujo silencioso hasta impacto brutalista.
+                  </p>
+                </div>
+                <div className="flex flex-wrap gap-2 text-[11px] uppercase tracking-[0.18em] text-foreground/45">
+                  <span className="rounded-full border border-border bg-background px-3 py-1.5">Más contraste</span>
+                  <span className="rounded-full border border-border bg-background px-3 py-1.5">Más valor percibido</span>
+                  <span className="rounded-full border border-border bg-background px-3 py-1.5">Más diferenciación</span>
+                </div>
+              </div>
+            </div>
+            <div className="grid gap-5 lg:grid-cols-2 2xl:grid-cols-3">
+              {TEMPLATES.map((t) => {
+                const isSelected = selectedTemplate === t.id
+                const isCompared = compareTemplates.includes(t.id)
+
+                return (
+                  <div
+                    key={t.id}
+                    className={`overflow-hidden rounded-[1.6rem] border transition-all duration-300 ${
+                      isSelected
+                        ? 'border-foreground bg-background shadow-[0_24px_80px_-32px_rgba(0,0,0,0.35)] -translate-y-0.5'
+                        : 'border-border bg-background/80 hover:-translate-y-1 hover:border-foreground/40 hover:shadow-[0_24px_60px_-36px_rgba(0,0,0,0.35)]'
+                    }`}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => setSelectedTemplate(t.id)}
+                      className="group block w-full text-left"
+                    >
+                      <TemplatePreview template={t} selected={isSelected} />
+                      <div className="p-4">
+                        <div className="flex items-start justify-between gap-3">
+                          <div>
+                            <p className="text-base font-semibold leading-tight">{t.name}</p>
+                            <p className="mt-1 text-[11px] uppercase tracking-[0.26em] text-foreground/45">{t.marketTag}</p>
+                          </div>
+                          <span className={`rounded-full border px-2.5 py-1 text-[10px] uppercase tracking-[0.22em] ${isSelected ? 'border-foreground bg-foreground text-background' : 'border-border text-foreground/45'}`}>
+                            {isSelected ? 'Seleccionada' : 'Disponible'}
+                          </span>
+                        </div>
+                        <p className="mt-3 text-sm leading-relaxed text-foreground/72">
+                          {t.description}
+                        </p>
+                        <p className="mt-3 text-xs uppercase tracking-[0.18em] text-foreground/42">
+                          Ideal para {t.idealFor}
+                        </p>
+                        <div className="mt-4 flex flex-wrap gap-2">
+                          {t.highlights.map((highlight) => (
+                            <span key={highlight} className="rounded-full border border-border bg-muted/40 px-2.5 py-1 text-[10px] uppercase tracking-[0.16em] text-foreground/55">
+                              {highlight}
+                            </span>
+                          ))}
+                        </div>
                       </div>
+                    </button>
+
+                    <div className="flex items-center justify-between border-t border-border/60 px-4 py-3">
+                      <button
+                        type="button"
+                        onClick={() => toggleCompareTemplate(t.id)}
+                        className={`rounded-full border px-3 py-1 text-[10px] uppercase tracking-[0.2em] transition-colors ${
+                          isCompared
+                            ? 'border-foreground bg-foreground text-background'
+                            : 'border-border text-foreground/55 hover:border-foreground hover:text-foreground'
+                        }`}
+                      >
+                        {isCompared ? 'En comparativa' : 'Comparar'}
+                      </button>
+                      <p className="text-[10px] uppercase tracking-[0.18em] text-foreground/40">
+                        Max 3 vistas
+                      </p>
                     </div>
-                    {/* Mock hero name */}
-                    <div className="absolute bottom-8 left-3 right-3">
-                      <div className="mb-1 h-3 w-24 rounded opacity-70" style={{ background: t.preview_text ?? '#888' }} />
-                      <div className="h-2 w-14 rounded opacity-30" style={{ background: t.preview_text ?? '#888' }} />
-                    </div>
-                    {/* Accent line */}
-                    <div className="absolute bottom-0 left-0 h-1.5 w-full opacity-80" style={{ background: t.preview_accent ?? '#888' }} />
-                    {/* Selected checkmark */}
-                    {selectedTemplate === t.id && (
-                      <div className="absolute right-2 top-2 flex h-5 w-5 items-center justify-center rounded-full bg-foreground text-background text-[9px] font-bold shadow-md">✓</div>
-                    )}
                   </div>
-                  {/* Info */}
-                  <div className="p-3">
-                    <div className="flex items-start justify-between gap-1">
-                      <p className="text-xs font-semibold leading-tight">{t.name}</p>
-                      {t.layoutStyle && (
-                        <span className="shrink-0 rounded-full border border-border px-1.5 py-0.5 text-[8px] uppercase tracking-wide text-foreground/40">
-                          {t.layoutStyle}
-                        </span>
-                      )}
-                    </div>
-                    <p className="mt-1 line-clamp-2 text-[10px] leading-relaxed text-foreground/40">
-                      {t.description}
+                )
+              })}
+            </div>
+
+            {editing && (
+              <div className="mt-8 rounded-[1.5rem] border border-border bg-muted/20 p-4 lg:p-5">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div>
+                    <p className="text-[11px] uppercase tracking-[0.28em] text-foreground/45">Previsualizador inline</p>
+                    <p className="mt-1 text-sm text-foreground/65">
+                      Compara hasta 3 plantillas lado a lado sin guardar cambios.
                     </p>
                   </div>
-                </button>
-              ))}
-            </div>
+                  <button
+                    type="button"
+                    onClick={() => setInlinePreviewExpanded((prev) => !prev)}
+                    className="rounded-full border border-border bg-background px-4 py-2 text-xs font-medium transition-colors hover:border-foreground"
+                  >
+                    {inlinePreviewExpanded ? 'Ocultar comparativa' : 'Mostrar comparativa'}
+                  </button>
+                </div>
+
+                {inlinePreviewExpanded && (
+                  <>
+                    <div className="mt-4 flex flex-wrap items-center gap-2">
+                      {compareTemplates.map((templateId) => {
+                        const template = TEMPLATES.find((tpl) => tpl.id === templateId)
+                        if (!template) return null
+
+                        return (
+                          <button
+                            key={templateId}
+                            type="button"
+                            onClick={() => setSelectedTemplate(templateId)}
+                            className={`rounded-full border px-3 py-1.5 text-[10px] uppercase tracking-[0.22em] transition-colors ${
+                              selectedTemplate === templateId
+                                ? 'border-foreground bg-foreground text-background'
+                                : 'border-border bg-background text-foreground/60 hover:border-foreground hover:text-foreground'
+                            }`}
+                          >
+                            {template.name}
+                          </button>
+                        )
+                      })}
+                    </div>
+
+                    <div className={`mt-5 grid gap-4 ${compareTemplates.length === 1 ? 'xl:grid-cols-1' : compareTemplates.length === 2 ? 'xl:grid-cols-2' : 'xl:grid-cols-3'}`}>
+                      {previewSlug ? (
+                        compareTemplates.map((templateId) => {
+                          const template = TEMPLATES.find((tpl) => tpl.id === templateId)
+                          if (!template) return null
+
+                          const iframeSrc = `/artista/${previewSlug}?previewTemplate=${encodeURIComponent(templateId)}`
+
+                          return (
+                            <div key={templateId} className="overflow-hidden rounded-2xl border border-border bg-background">
+                              <div className="flex items-center justify-between border-b border-border px-3 py-2">
+                                <p className="text-xs uppercase tracking-[0.2em] text-foreground/55">{template.name}</p>
+                                <button
+                                  type="button"
+                                  onClick={() => setSelectedTemplate(templateId)}
+                                  className={`rounded-full border px-2.5 py-1 text-[10px] uppercase tracking-[0.2em] transition-colors ${
+                                    selectedTemplate === templateId
+                                      ? 'border-foreground bg-foreground text-background'
+                                      : 'border-border text-foreground/55 hover:border-foreground hover:text-foreground'
+                                  }`}
+                                >
+                                  {selectedTemplate === templateId ? 'Activa' : 'Usar esta'}
+                                </button>
+                              </div>
+                              <iframe
+                                title={`Preview ${template.name}`}
+                                src={iframeSrc}
+                                className="h-[640px] w-full"
+                                loading="lazy"
+                              />
+                            </div>
+                          )
+                        })
+                      ) : (
+                        <div className="rounded-2xl border border-dashed border-border bg-background px-4 py-6 text-sm text-foreground/50">
+                          No se pudo construir el enlace de previsualización. Completa o corrige el nombre del artista.
+                        </div>
+                      )}
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Secciones del perfil */}

@@ -11,6 +11,7 @@ import {
     Phone,
 } from 'lucide-react'
 import ArtworkModal from './ArtworkModal'
+import { NarrativeLead, NarrativeRibbon } from './NarrativeSystem'
 import type { LayoutProps } from './types'
 
 /** Etiqueta de museo: placa pequeña con borde fino y serif */
@@ -128,6 +129,10 @@ export default function LayoutMuseum({
           </motion.div>
         </div>
       </section>
+
+      <NarrativeRibbon theme="museum" artistName={artist.name} />
+
+      <NarrativeLead theme="museum" stage="act2" />
 
       {/* ─── MANIFIESTO — placa central ───────────────────── */}
       {artist.inspiring_quote && (
@@ -270,6 +275,8 @@ export default function LayoutMuseum({
           </div>
         </div>
       </section>
+
+      <NarrativeLead theme="museum" stage="act3" />
 
       {/* ─── COLECCIÓN — pared de obras colgadas ──────────── */}
       {artworks.length > 0 && (

@@ -13,6 +13,7 @@ import {
 } from 'lucide-react'
 import { useRef } from 'react'
 import ArtworkModal from './ArtworkModal'
+import { NarrativeLead, NarrativeRibbon } from './NarrativeSystem'
 import type { LayoutProps } from './types'
 
 export default function LayoutEditorial({
@@ -195,6 +196,10 @@ export default function LayoutEditorial({
           </p>
         </motion.div>
       </section>
+
+      <NarrativeRibbon theme="editorial" artistName={artist.name} />
+
+      <NarrativeLead theme="editorial" stage="act2" />
 
       {/* ─── QUOTE CON REVEAL ─────────────────────────────── */}
       {artist.inspiring_quote && (
@@ -421,6 +426,8 @@ export default function LayoutEditorial({
           </div>
         </div>
       </section>
+
+      <NarrativeLead theme="editorial" stage="act3" />
 
       {/* ─── OBRAS (MASONRY) ──────────────────────────────── */}
       {artworks.length > 0 && (

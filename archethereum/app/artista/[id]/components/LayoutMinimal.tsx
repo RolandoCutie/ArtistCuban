@@ -4,12 +4,12 @@ import { motion } from 'framer-motion'
 import {
     ArrowUpRight,
     Award,
-    Globe,
     Mail,
     MapPin,
-    Phone,
+    Phone
 } from 'lucide-react'
 import ArtworkModal from './ArtworkModal'
+import { NarrativeLead, NarrativeRibbon } from './NarrativeSystem'
 import type { LayoutProps } from './types'
 
 /** Divisor: línea fina monocroma */
@@ -93,6 +93,10 @@ export default function LayoutMinimal({
         </motion.div>
       </section>
 
+      <NarrativeRibbon theme="minimal" artistName={artist.name} />
+
+      <NarrativeLead theme="minimal" stage="act2" />
+
       {/* ─── MANIFIESTO ───────────────────────────────────── */}
       {artist.inspiring_quote && (
         <section className="py-20">
@@ -170,6 +174,8 @@ export default function LayoutMinimal({
           </p>
         )}
       </section>
+
+      <NarrativeLead theme="minimal" stage="act3" />
 
       {/* ─── OBRAS — índice de sala ───────────────────────── */}
       {artworks.length > 0 && (
