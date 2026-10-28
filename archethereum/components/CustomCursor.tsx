@@ -1,15 +1,20 @@
 'use client'
 
+import { usePathname } from 'next/navigation'
 import { useEffect, useRef } from 'react'
 
 // Zero React re-renders: todo via refs directas al DOM + RAF
 export default function CustomCursor() {
+  const pathname = usePathname()
   const dotRef = useRef<HTMLDivElement>(null)
   const ringRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const isTouchDevice = window.matchMedia('(pointer: coarse)').matches
-    if (isTouchDevice) return
+    const isEmbeddedFrame = window.self !== window.top
+    const isDashboardRoute = pathname.startsWith('/dashboard')
+    const isEmbeddedPreview = new URLSearchParams(window.location.search).get('embeddedPreview') === '1'
+    if (isTouchDevice || isEmbeddedFrame || isDashboardRoute || isEmbeddedPreview) return
 
     const dot = dotRef.current
     const ring = ringRef.current
@@ -36,9 +41,13 @@ export default function CustomCursor() {
       applyDot()
       dot.style.opacity = '1'
 
-      const el = document.elementFromPoint(e.clientX, e.clientY)
+      const el = e.target instanceof Element ? e.target : null
       const wasPointer = isPointer
-      isPointer = !!(el?.closest('a, button, input, [role="button"], [data-cursor="view"]'))
+      isPointer = !!(
+        el?.closest(
+          'a, button, input, textarea, select, label, summary, [role="button"], [data-cursor="view"]',
+        )
+      )
       if (isPointer !== wasPointer) {
         ring.style.width = isPointer ? '48px' : '32px'
         ring.style.height = isPointer ? '48px' : '32px'
@@ -47,6 +56,11 @@ export default function CustomCursor() {
 
     const onLeave = () => { dot.style.opacity = '0'; ring.style.opacity = '0' }
     const onEnter = () => { dot.style.opacity = '1'; ring.style.opacity = '1' }
+    const onVisibilityChange = () => {
+      if (!document.hidden) return
+      dot.style.opacity = '0'
+      ring.style.opacity = '0'
+    }
 
     const tick = () => {
       ringPos.x += (mouse.x - ringPos.x) * 0.15
@@ -59,6 +73,7 @@ export default function CustomCursor() {
     document.addEventListener('mousemove', onMove, { passive: true })
     document.addEventListener('mouseleave', onLeave)
     document.addEventListener('mouseenter', onEnter)
+    document.addEventListener('visibilitychange', onVisibilityChange)
     rafId = requestAnimationFrame(tick)
 
     return () => {
@@ -66,9 +81,10 @@ export default function CustomCursor() {
       document.removeEventListener('mousemove', onMove)
       document.removeEventListener('mouseleave', onLeave)
       document.removeEventListener('mouseenter', onEnter)
+      document.removeEventListener('visibilitychange', onVisibilityChange)
       cancelAnimationFrame(rafId)
     }
-  }, [])
+  }, [pathname])
 
   return (
     <>

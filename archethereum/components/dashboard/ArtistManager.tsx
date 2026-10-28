@@ -247,6 +247,89 @@ function TemplatePreview({ template, selected }: { template: TemplateConfig; sel
             </div>
           </>
         )
+      case 'atlas':
+        return (
+          <>
+            <div className="absolute left-4 right-4 top-14 grid grid-cols-[0.75fr_1.25fr] gap-2">
+              <div className="rounded-[1.1rem] border bg-white/70 p-2" style={{ borderColor: `${textColor}22` }}>
+                <div className="h-9 rounded-lg" style={{ background: softText }} />
+                <div className="mt-2 h-8 rounded-lg" style={{ background: softAccent }} />
+              </div>
+              <div className="space-y-2 rounded-[1.2rem] border bg-white/66 p-3" style={{ borderColor: `${accentColor}2a` }}>
+                {bar('76%', '0.74rem', textColor, 0.9)}
+                {bar('54%', '0.4rem', textColor, 0.3)}
+                <div className="flex gap-2 pt-1">
+                  <div className="h-7 flex-1 rounded-xl" style={{ background: softAccent }} />
+                  <div className="h-7 w-10 rounded-xl" style={{ background: softText }} />
+                </div>
+              </div>
+            </div>
+          </>
+        )
+      case 'runway':
+        return (
+          <>
+            <div className="absolute inset-x-0 top-14 h-7 border-y" style={{ borderColor: `${textColor}22`, background: `${textColor}08` }} />
+            <div className="absolute left-4 right-4 top-24 flex gap-2">
+              {[0.95, 0.75, 0.55].map((opacity, index) => (
+                <div key={index} className="h-16 flex-1 rounded-[1rem] border" style={{ borderColor: `${accentColor}48`, background: `${accentColor}20`, opacity }} />
+              ))}
+            </div>
+            <div className="absolute bottom-5 left-4 right-4 flex items-center gap-2">
+              <div className="h-6 w-6 rounded-full" style={{ background: accentColor }} />
+              {bar('62%', '0.45rem', textColor, 0.82)}
+            </div>
+          </>
+        )
+      case 'prisma':
+        return (
+          <>
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_10%_20%,rgba(195,107,255,0.26),transparent_32%),radial-gradient(circle_at_84%_18%,rgba(123,205,255,0.26),transparent_34%)]" />
+            <div className="absolute left-4 right-4 top-14 grid grid-cols-2 gap-2">
+              <div className="rounded-[1.1rem] border bg-white/16 p-2 backdrop-blur-md" style={{ borderColor: `${accentColor}44` }}>
+                {bar('80%', '0.72rem', textColor, 0.92)}
+                {bar('56%', '0.4rem', textColor, 0.32)}
+              </div>
+              <div className="grid gap-2">
+                <div className="h-10 rounded-[0.9rem]" style={{ background: `${accentColor}4f` }} />
+                <div className="h-10 rounded-[0.9rem]" style={{ background: `${textColor}22` }} />
+              </div>
+            </div>
+          </>
+        )
+      case 'zen':
+        return (
+          <>
+            <div className="absolute left-9 top-14 h-20 w-px" style={{ background: `${textColor}25` }} />
+            <div className="absolute left-14 right-6 top-[3.75rem] space-y-2">
+              {bar('58%', '0.75rem', textColor, 0.88)}
+              {bar('42%', '0.4rem', textColor, 0.26)}
+              <div className="mt-5 h-px w-20" style={{ background: `${accentColor}45` }} />
+            </div>
+            <div className="absolute bottom-6 left-14 right-6 flex gap-2">
+              <div className="h-8 w-14 border" style={{ borderColor: `${textColor}24` }} />
+              <div className="h-8 flex-1 border" style={{ borderColor: `${textColor}24` }} />
+            </div>
+          </>
+        )
+      case 'ledger':
+        return (
+          <>
+            <div className="absolute left-4 right-4 top-14 border-2 px-3 py-2" style={{ borderColor: `${textColor}2f` }}>
+              <div className="grid grid-cols-[0.8fr_1.2fr] gap-2">
+                <div className="space-y-2">
+                  {bar('100%', '0.36rem', textColor, 0.28)}
+                  {bar('82%', '0.36rem', textColor, 0.22)}
+                </div>
+                <div className="space-y-2">
+                  {bar('90%', '0.36rem', textColor, 0.78)}
+                  {bar('66%', '0.36rem', textColor, 0.35)}
+                </div>
+              </div>
+            </div>
+            <div className="absolute bottom-5 left-4 right-4 h-px" style={{ background: `linear-gradient(90deg, ${textColor}20, ${accentColor}, ${textColor}20)` }} />
+          </>
+        )
       default:
         return (
           <div className="absolute left-4 right-4 top-16 space-y-3">
@@ -781,7 +864,7 @@ export default function ArtistManager() {
                           const template = TEMPLATES.find((tpl) => tpl.id === templateId)
                           if (!template) return null
 
-                          const iframeSrc = `/artista/${previewSlug}?previewTemplate=${encodeURIComponent(templateId)}`
+                          const iframeSrc = `/artista/${previewSlug}?previewTemplate=${encodeURIComponent(templateId)}&embeddedPreview=1`
 
                           return (
                             <div key={templateId} className="overflow-hidden rounded-2xl border border-border bg-background">

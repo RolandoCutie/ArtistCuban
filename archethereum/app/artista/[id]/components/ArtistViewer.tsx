@@ -7,11 +7,16 @@ import LayoutCinematic from './LayoutCinematic'
 import LayoutEditorial from './LayoutEditorial'
 import LayoutEmerald from './LayoutEmerald'
 import LayoutGlass from './LayoutGlass'
+import LayoutLedger from './LayoutLedger'
 import LayoutLuxury from './LayoutLuxury'
 import LayoutMinimal from './LayoutMinimal'
 import LayoutModern from './LayoutModern'
 import LayoutMuseum from './LayoutMuseum'
 import LayoutOrganic from './LayoutOrganic'
+import LayoutAtlas from './LayoutAtlas'
+import LayoutPrisma from './LayoutPrisma'
+import LayoutRunway from './LayoutRunway'
+import LayoutZen from './LayoutZen'
 import type { Artist, Artwork, Exhibition, Service } from './types'
 
 const TEMPLATE_LAYOUT: Record<string, string> = {
@@ -25,6 +30,11 @@ const TEMPLATE_LAYOUT: Record<string, string> = {
   template7: 'minimal',
   template9: 'organic',
   template10: 'brutal',
+  template11: 'atlas',
+  template12: 'runway',
+  template13: 'prisma',
+  template14: 'zen',
+  template15: 'ledger',
 }
 
 interface Props {
@@ -163,7 +173,12 @@ export default function ArtistViewer({ artist, artworks, services, exhibitions, 
         aria-hidden
         className="pointer-events-none fixed inset-0 -z-10"
         style={{
-          opacity: layoutType === 'minimal' || layoutType === 'museum' ? 0.16 : 0.24,
+          opacity:
+            layoutType === 'minimal' || layoutType === 'museum' || layoutType === 'zen' || layoutType === 'ledger'
+              ? 0.16
+              : layoutType === 'prisma'
+                ? 0.3
+                : 0.24,
           backgroundImage: `
             radial-gradient(46rem 30rem at 12% 14%, hsla(${auraHueA}, 80%, 56%, 0.36), transparent 70%),
             radial-gradient(38rem 26rem at 84% 10%, hsla(${auraHueB}, 78%, 50%, 0.32), transparent 72%),
@@ -181,6 +196,11 @@ export default function ArtistViewer({ artist, artworks, services, exhibitions, 
       {layoutType === 'glass' && <LayoutGlass {...layoutProps} />}
       {layoutType === 'minimal' && <LayoutMinimal {...layoutProps} />}
       {layoutType === 'emerald' && <LayoutEmerald {...layoutProps} />}
+      {layoutType === 'atlas' && <LayoutAtlas {...layoutProps} />}
+      {layoutType === 'runway' && <LayoutRunway {...layoutProps} />}
+      {layoutType === 'prisma' && <LayoutPrisma {...layoutProps} />}
+      {layoutType === 'zen' && <LayoutZen {...layoutProps} />}
+      {layoutType === 'ledger' && <LayoutLedger {...layoutProps} />}
     </div>
   )
 }
